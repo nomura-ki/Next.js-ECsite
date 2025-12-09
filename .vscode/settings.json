@@ -1,0 +1,22 @@
+{
+  "markdown.preview.breaks": true,
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.lineHeight": 1.6,
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.scrollEditorWithPreview": true,
+  "markdown.extension.toc.levels": "1..6",
+  "markdown.extension.toc.orderedList": false,
+  "markdown.extension.toc.updateOnSave": true,
+  "plantuml.server": "https://www.plantuml.com/plantuml",
+  "plantuml.render": "PlantUMLServer",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "files.associations": {
+    "*.puml": "plantuml"
+  },
+  "prisma.pinToPrisma6": true
+}

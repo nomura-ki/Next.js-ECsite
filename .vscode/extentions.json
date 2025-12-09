@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "bierner.markdown-mermaid",
+    "jebbs.plantuml",
+    "pmneo.tsimporter",
+    "dsznajder.es7-react-js-snippets",
+    "Prisma.prisma",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "ckolkman.vscode-postgres",
+    "formulahendry.auto-rename-tag",
+    "CoenraadS.bracket-pair-colorizer"
+  ]
+}

@@ -159,7 +159,7 @@ export async function PUT(req: NextRequest) {
 
     // const cartItems = cart.map(formatCartItem);
 
-    return successResponse({ cart });
+    return successResponse({ message: "個数を更新しました" });
   } catch {
     return errorResponse("更新に失敗しました");
   }

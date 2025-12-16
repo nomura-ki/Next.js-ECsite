@@ -11,6 +11,17 @@ export default function CheckCart({
   const [products, setProducts] = useState(initialCartProducts);
   const [message, setMessage] = useState("");
 
+  let total = 0;
+  let ProTotal = 0;
+
+  for (let i = 0; products.length > i; i++) {
+    total = total + products[i].subtotal;
+  }
+
+  for (let i = 0; products.length > i; i++) {
+    ProTotal = ProTotal + products[i].quantity;
+  }
+
   const handleDeleteItem = async (productId: string) => {
     setMessage("");
     try {
@@ -67,7 +78,19 @@ export default function CheckCart({
         return;
       }
       const UpdateData = await UpdateRes.json();
-      const NewData: CartItemWithProduct[] = UpdateData.data.newCart;
+
+      const GetRes = await fetch("/api/cart", {
+        method: "GET",
+        headers: { cookie: cookieStore.toString() },
+      });
+
+      if (!GetRes) {
+        console.log("GetResponse error");
+        return;
+      }
+      const GetData = await GetRes.json();
+
+      const NewData: CartItemWithProduct[] = GetData.data.cartItems;
       console.log(NewData);
       setProducts(NewData);
 
@@ -98,9 +121,13 @@ export default function CheckCart({
         <tbody>
           {products.map((p) => (
             <tr key={p.id}>
-              <td className="border border-gray">{p.product.name}</td>
-              <td className="border border-gray">{p.product.price}</td>
-              <td className="border border-gray">
+              <td className="border border-gray text-center align-middle">
+                {p.product.name}
+              </td>
+              <td className="border border-gray text-center align-middle">
+                ￥{p.product.price}
+              </td>
+              <td className="border border-gray text-center align-middle">
                 <input
                   type="number"
                   min={0}
@@ -111,8 +138,10 @@ export default function CheckCart({
                   }
                 />
               </td>
-              <td className="border border-gray">{p.subtotal}</td>
-              <td className="border border-gray">
+              <td className="border border-gray text-center align-middle">
+                ￥{p.subtotal}
+              </td>
+              <td className="border border-gray text-center align-middle">
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(p.product.id)}
@@ -122,6 +151,17 @@ export default function CheckCart({
               </td>
             </tr>
           ))}
+          <tr>
+            <td className="text-center align-middle">合計</td>
+            <td className="border border-gray text-center align-middle">-</td>
+            <td className="border border-gray text-center align-middle">
+              {ProTotal}
+            </td>
+            <td className="border border-gray text-center align-middle">
+              ￥{total}
+            </td>
+            <td className="border border-gray text-center align-middle">-</td>
+          </tr>
         </tbody>
       </table>
 

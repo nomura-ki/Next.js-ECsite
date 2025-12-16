@@ -123,9 +123,7 @@ async function main() {
       category_id: category1.id,
       seller_id: seller1.id,
       product_images: {
-        create: [
-          { image_url: "https://example.com/smartphone.jpg", sort_order: 0 },
-        ],
+        create: [{ image_url: "/smartphone.jpg", sort_order: 0 }],
       },
     },
   });
@@ -139,9 +137,7 @@ async function main() {
       category_id: category1.id,
       seller_id: seller2.id,
       product_images: {
-        create: [
-          { image_url: "https://example.com/laptop.jpg", sort_order: 0 },
-        ],
+        create: [{ image_url: "/laptop.jpg", sort_order: 0 }],
       },
     },
   });
@@ -155,7 +151,7 @@ async function main() {
       category_id: category2.id,
       seller_id: seller1.id,
       product_images: {
-        create: [{ image_url: "https://example.com/book.jpg", sort_order: 0 }],
+        create: [{ image_url: "/book.jpg", sort_order: 0 }],
       },
     },
   });

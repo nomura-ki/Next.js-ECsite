@@ -37,6 +37,7 @@ export default function ProductDeleteButton({ id }: { id: string }) {
 
   return (
     <button
+      type="button"
       onClick={handleDelete}
       disabled={loading}
       className="mt-4 w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

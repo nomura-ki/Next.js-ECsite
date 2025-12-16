@@ -7,8 +7,10 @@ export interface CartItemWithProduct extends CartItem {
     id: string;
     name: string;
     price: number;
+    stock: number;
     product_images: { image_url: string }[];
   };
+  subtotal: number;
 }
 
 export function formatCartItem(cartItem: CartItemWithProduct) {
@@ -18,6 +20,7 @@ export function formatCartItem(cartItem: CartItemWithProduct) {
       id: cartItem.product.id,
       name: cartItem.product.name,
       price: cartItem.product.price,
+      stock: cartItem.product.stock,
       imageUrl: cartItem.product.product_images[0]?.image_url || "",
     },
     quantity: cartItem.quantity,

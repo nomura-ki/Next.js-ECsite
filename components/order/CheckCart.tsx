@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CartItemWithProduct } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function CheckCart({
   initialCartProducts,
@@ -10,6 +11,7 @@ export default function CheckCart({
 }) {
   const [products, setProducts] = useState(initialCartProducts);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   let total = 0;
   let ProTotal = 0;
@@ -130,7 +132,7 @@ export default function CheckCart({
               <td className="border border-gray text-center align-middle">
                 <input
                   type="number"
-                  min={0}
+                  min={1}
                   max={p.product.stock}
                   value={p.quantity}
                   onChange={(e) =>
@@ -152,7 +154,7 @@ export default function CheckCart({
             </tr>
           ))}
           <tr>
-            <td className="text-center align-middle">合計</td>
+            <th className="text-center align-middle">合計</th>
             <td className="border border-gray text-center align-middle">-</td>
             <td className="border border-gray text-center align-middle">
               {ProTotal}
@@ -164,6 +166,18 @@ export default function CheckCart({
           </tr>
         </tbody>
       </table>
+
+      {products.length > 0 && (
+        <button
+          type="button"
+          onClick={() => router.push("/orders/comfirm")}
+          className="m-3 mb-4 px-4 py-2 bg-blue-300 text-gray-800 rounded-lg hover:bg-blue-400 transition"
+        >
+          {" "}
+          購入手続きへ
+        </button>
+      )}
+      {products.length === 0 && <h1 className="m-3">カートが空です</h1>}
 
       {message && (
         <p

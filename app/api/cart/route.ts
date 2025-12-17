@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
     console.log("トークン" + token.userId);
 
     const cart = await prisma.cartItem.findMany({
+      orderBy: {
+        product_id: "desc",
+      },
       where: {
         user_id: token.userId,
       },
@@ -130,7 +133,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const cart = await prisma.cartItem.update({
+    await prisma.cartItem.update({
       where: {
         user_id_product_id: {
           user_id: token.userId,

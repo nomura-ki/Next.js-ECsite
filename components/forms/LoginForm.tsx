@@ -30,6 +30,7 @@ export default function LoginForm() {
       router.push("/products");
     } catch (err) {
       setError("ログインに失敗しました!");
+      return;
     }
   };
 

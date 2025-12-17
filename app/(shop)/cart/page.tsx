@@ -33,8 +33,6 @@ export default async function Page() {
       <h1 className="text-3xl m-2">カート</h1>
       <CheckCart initialCartProducts={pro} />
       <BackButton href="/products" label="買い物を続ける" />
-
-      <BackButton href="/orders/comfirm" label="購入手続きへ" />
     </div>
   );
 }

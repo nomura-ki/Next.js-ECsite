@@ -74,6 +74,57 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   // TODO: 商品登録APIの作成
+  try {
+    const token = getUserFromReq(req);
+
+    if (!token) {
+      return NextResponse.json({ errorl: "認証失敗" }, { status: 401 });
+    }
+
+    const { name, price, description, category_id, stock, formData } =
+      await req.json();
+
+    const newPrice = Number(price);
+
+    // const newfiles = saveFiles(files, "public/productImages/coffee");
+
+    const seller = await prisma.seller.findUnique({
+      where: {
+        userId: token.userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!seller) {
+      return;
+    }
+
+    console.log("price:", price, "typeof:", typeof price);
+    console.log("formData:", formData);
+    // console.log(formData[0]);
+
+    await prisma.product.create({
+      data: {
+        name,
+        price: newPrice,
+        description,
+        stock,
+        category_id,
+        seller_id: seller.id,
+        product_images: formData,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(req: NextRequest) {

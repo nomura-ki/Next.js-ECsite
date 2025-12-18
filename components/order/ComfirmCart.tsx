@@ -85,8 +85,8 @@ export default function ComfirmCart() {
           </label>
         </div>
         <fieldset>
+          <legend>支払方法</legend>
           <div>
-            <legend>支払方法</legend>
             <label>
               <input
                 type="radio"

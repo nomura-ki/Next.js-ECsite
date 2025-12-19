@@ -12,11 +12,11 @@ export default function CreateProducts() {
 
   const [error, setError] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [price, setPrice] = useState<number>();
+  const [price, setPrice] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
   const [category_id, setcategory_id] = useState<string>("");
   const [dispCategory, setDispCategory] = useState<Category[]>([]);
-  const [stock, setStock] = useState<number>();
+  const [stock, setStock] = useState<number>(0);
   const [files, setFiles] = useState<File[]>([]);
   const router = useRouter();
 
@@ -38,14 +38,17 @@ export default function CreateProducts() {
     console.log("files:", files);
   };
 
-  const formData = new FormData();
-  files.forEach((file, index) => {
-    formData.append(`files[${index}]`, file);
-  });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const formData = new FormData();
+    files.forEach((file, index) => {
+      formData.append(`files[${index}]`, file);
+      console.log(`files[${index}]`, file);
+    });
+
+    console.log(formData);
 
     try {
       const res = await fetch("/api/products", {

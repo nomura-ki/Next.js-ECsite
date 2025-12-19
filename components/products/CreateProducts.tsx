@@ -44,26 +44,22 @@ export default function CreateProducts() {
 
     const formData = new FormData();
     files.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
-      console.log(`files[${index}]`, file);
+      formData.append(`file[]`, file);
+      console.log(`file[]`, file);
     });
+
+    formData.append("name", name);
+    formData.append("price", String(price));
+    formData.append("description", description);
+    formData.append("category_id", category_id);
+    formData.append("stock", String(stock));
 
     console.log(formData);
 
     try {
       const res = await fetch("/api/products", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          price,
-          description,
-          category_id,
-          stock,
-          formData,
-        }),
+        body: formData,
       });
 
       const data = await res.json();

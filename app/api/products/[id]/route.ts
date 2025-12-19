@@ -40,12 +40,16 @@ export async function GET(
       description: i.product.description,
       stock: i.product.stock,
     }));
-    console.log("products =", image);
+
+    for (let i = 0; image.length > i; i++) {
+      console.log(image[i].image_url);
+    }
+    console.log("image", image);
 
     return NextResponse.json({
       success: true,
       data: {
-        products: image,
+        products,
       },
     });
   } catch (err) {

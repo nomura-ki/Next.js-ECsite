@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
     const body = await res.json();
 
-    productInfo = body.data.products[0].product;
+    productInfo = body.data.products[0];
 
     for (let i = 0; body.data.products.length > i; i++) {
       images.push(body.data.products[i].image_url);
@@ -38,12 +38,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   return (
     <div>
       <ProductImages imageUrls={images} />
-      <div>{productInfo.name}</div>
-      <div>￥{productInfo.price}</div>
-      <div>商品説明：{productInfo.description}</div>
+      <div>{productInfo.product.name}</div>
+      <div>￥{productInfo.product.price}</div>
+      <div>商品説明：{productInfo.product.description}</div>
       <AddToCartButton
         productId={productInfo.product_id}
-        stock={productInfo.stock}
+        stock={productInfo.product.stock}
       />
       <BackButton href="/products" label="戻る" />
     </div>

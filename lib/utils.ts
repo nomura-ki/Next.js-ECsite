@@ -2,6 +2,14 @@ import fs from "fs";
 import path from "path";
 import { CartItem } from "@prisma/client";
 
+export interface Orders {
+  id: string;
+  order_number: string;
+  status: string;
+  total: number;
+  created_at: string;
+}
+
 export interface CartItemWithProduct extends CartItem {
   product: {
     id: string;

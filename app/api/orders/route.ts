@@ -5,6 +5,31 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function GET(req: NextRequest) {
   // TODO: 注文一覧取得APIの作成
+  try {
+    const order = await prisma.order.findMany({
+      select: {
+        id: true,
+        order_number: true,
+        status: true,
+        total: true,
+        created_at: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: order,
+    });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { success: true, message: "internal error" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {

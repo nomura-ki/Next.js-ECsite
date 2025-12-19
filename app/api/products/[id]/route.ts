@@ -12,7 +12,6 @@ export async function GET(
   // TODO: 商品詳細取得APIの作成
   try {
     const { id } = await params;
-    console.log("id =", id);
 
     const products = await prisma.productImage.findMany({
       where: {
@@ -32,19 +31,19 @@ export async function GET(
       },
     });
 
-    const image = products.map((i) => ({
-      product_id: i.product_id,
-      image_url: i.image_url,
-      name: i.product.name,
-      price: i.product.price,
-      description: i.product.description,
-      stock: i.product.stock,
-    }));
+    // const image = products.map((i) => ({
+    //   product_id: i.product_id,
+    //   image_url: i.image_url,
+    //   name: i.product.name,
+    //   price: i.product.price,
+    //   description: i.product.description,
+    //   stock: i.product.stock,
+    // }));
 
-    for (let i = 0; image.length > i; i++) {
-      console.log(image[i].image_url);
-    }
-    console.log("image", image);
+    // // for (let i = 0; image.length > i; i++) {
+    // //   console.log(image[i].image_url);
+    // // }
+    // // console.log("image", image);
 
     return NextResponse.json({
       success: true,

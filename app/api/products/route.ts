@@ -74,6 +74,109 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   // TODO: 商品登録APIの作成
+  try {
+    const token = getUserFromReq(req);
+
+    if (!token) {
+      return NextResponse.json({ errorl: "認証失敗" }, { status: 401 });
+    }
+
+    const formData = await req.formData();
+
+    console.log(formData);
+
+    // type File = {
+    //   size: number;
+    //   type: string;
+    //   name: string;
+    //   lastModified: number;
+    // };
+
+    const files = formData.getAll("file[]");
+    const name = String(formData.get("name"));
+    const price = Number(formData.get("price"));
+    const description = String(formData.get("description"));
+    const category_id = String(formData.get("category_id"));
+    const stock = Number(formData.get("stock"));
+
+    console.log(files);
+    console.log(
+      "name",
+      name,
+      "price",
+      price,
+      "desc",
+      description,
+      "catgo",
+      category_id,
+      "stock",
+      stock
+    );
+
+    const changeFileFormat = (dir: string) => {
+      const fileName: string[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (file instanceof File) {
+          fileName.push(`${dir}/${file.name}`);
+        } else {
+          throw new Error("ファイルの型が違います");
+        }
+      }
+      return fileName;
+    };
+
+    const product_images = changeFileFormat("/productImages/other");
+
+    console.log(product_images);
+
+    // const product_images = saveFiles(files, "public/productImages/coffee")
+
+    // const newPrice = Number(price);
+
+    // // const newfiles = saveFiles(files, "public/productImages/coffee");
+
+    const seller = await prisma.seller.findUnique({
+      where: {
+        userId: token.userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!seller) {
+      return;
+    }
+
+    // console.log("price:", price, "typeof:", typeof price);
+    // console.log("formData:", formData);
+    // // console.log(formData[0]);
+
+    await prisma.product.create({
+      data: {
+        name,
+        price,
+        description,
+        stock,
+        category_id,
+        seller_id: seller.id,
+        product_images: {
+          create: product_images.map((image_url) => ({ image_url })),
+        },
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(req: NextRequest) {

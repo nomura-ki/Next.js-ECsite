@@ -10,6 +10,7 @@ async function main() {
   // =====================================
   await prisma.$transaction([
     // model 名はプロジェクトに合わせて直してね
+    prisma.cartItem.deleteMany(),
     prisma.productImage.deleteMany(), // ProductImage モデルがある前提
     prisma.product.deleteMany(),
     prisma.seller.deleteMany(),
@@ -123,7 +124,9 @@ async function main() {
       category_id: category1.id,
       seller_id: seller1.id,
       product_images: {
-        create: [{ image_url: "/smartphone.jpg", sort_order: 0 }],
+        create: [
+          { image_url: "/productImages/phone/smartphone.jpg", sort_order: 0 },
+        ],
       },
     },
   });
@@ -137,7 +140,7 @@ async function main() {
       category_id: category1.id,
       seller_id: seller2.id,
       product_images: {
-        create: [{ image_url: "/laptop.jpg", sort_order: 0 }],
+        create: [{ image_url: "/productImages/pc/laptop.jpg", sort_order: 0 }],
       },
     },
   });
@@ -151,7 +154,7 @@ async function main() {
       category_id: category2.id,
       seller_id: seller1.id,
       product_images: {
-        create: [{ image_url: "/book.jpg", sort_order: 0 }],
+        create: [{ image_url: "/productImages/book/book.jpg", sort_order: 0 }],
       },
     },
   });

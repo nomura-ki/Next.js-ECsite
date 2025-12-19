@@ -9,8 +9,8 @@ interface Params {
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { id } = await params;
-  let arr;
-  let image: string[];
+  let productInfo;
+  const images: string[] = [];
 
   try {
     const res = await fetch(`http://localhost:3000/api/products/${id}`, {
@@ -20,28 +20,31 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
     const body = await res.json();
 
-    arr = body.data.products[0];
+    productInfo = body.data.products[0].product;
 
-    image = [arr.image_url];
+    for (let i = 0; body.data.products.length > i; i++) {
+      images.push(body.data.products[i].image_url);
+    }
 
-    console.log(arr);
     if (!res.ok) {
       console.log("error");
       return;
     }
   } catch (err) {
-    console.log("error");
+    console.error(err);
     return <div>エラーが発生しました</div>;
   }
-  console.log(image);
 
   return (
     <div>
-      <ProductImages imageUrls={image} />
-      <div>{arr.name}</div>
-      <div>￥{arr.price}</div>
-      <div>商品説明：{arr.description}</div>
-      <AddToCartButton productId={arr.product_id} stock={arr.stock} />
+      <ProductImages imageUrls={images} />
+      <div>{productInfo.name}</div>
+      <div>￥{productInfo.price}</div>
+      <div>商品説明：{productInfo.description}</div>
+      <AddToCartButton
+        productId={productInfo.product_id}
+        stock={productInfo.stock}
+      />
       <BackButton href="/products" label="戻る" />
     </div>
   );

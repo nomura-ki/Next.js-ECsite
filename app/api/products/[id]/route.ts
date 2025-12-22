@@ -59,3 +59,37 @@ export async function GET(
     );
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<Params> }
+) {
+  // TODO: 商品削除APIの作成
+  try {
+    const { id } = await params;
+
+    await prisma.productImage.deleteMany({
+      where: {
+        product_id: id,
+      },
+    });
+
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { success: true, message: "internal error" },
+      {
+        status: 500,
+      }
+    );
+  }
+}

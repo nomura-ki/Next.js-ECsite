@@ -4,14 +4,14 @@ import { NextResponse } from "next/server";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function DeleteProducts() {
+export default function DeleteProducts({ id }: { id: string }) {
   const [error, setError] = useState("");
   const router = useRouter();
 
   const handleDeleteProduct = async () => {
     setError("");
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch(`/api/products/${id}`, {
         method: "DELETE",
       });
 

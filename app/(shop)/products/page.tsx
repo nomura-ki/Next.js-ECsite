@@ -24,8 +24,6 @@ export default async function Products() {
 
   const pro: Product[] = data.data.products;
 
-  console.log(pro);
-
   return (
     <div>
       <ProductsList initialProducts={pro} />

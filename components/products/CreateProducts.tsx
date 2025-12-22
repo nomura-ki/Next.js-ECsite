@@ -43,7 +43,7 @@ export default function CreateProducts() {
     setError("");
 
     const formData = new FormData();
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       formData.append(`file[]`, file);
       console.log(`file[]`, file);
     });

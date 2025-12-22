@@ -182,7 +182,3 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   // TODO: 商品更新APIの作成
 }
-
-export async function DELETE(req: NextRequest) {
-  // TODO: 商品削除APIの作成
-}

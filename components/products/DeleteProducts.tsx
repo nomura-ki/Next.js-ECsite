@@ -25,6 +25,7 @@ export default function DeleteProducts({ id }: { id: string }) {
       return NextResponse.json({ success: true });
     } catch (err) {
       console.error(err);
+      setError("エラーが発生しました");
       return NextResponse.json(
         { success: false, message: "エラーが発生しました" },
         { status: 500 }

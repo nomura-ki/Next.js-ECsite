@@ -68,6 +68,22 @@ export async function DELETE(
   try {
     const { id } = await params;
 
+    const order = await prisma.orderItem.findFirst({
+      where: {
+        product_id: id,
+      },
+    });
+
+    if (order) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "この商品は注文されているため、削除できません",
+        },
+        { status: 200 }
+      );
+    }
+
     await prisma.productImage.deleteMany({
       where: {
         product_id: id,
@@ -86,7 +102,7 @@ export async function DELETE(
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { success: true, message: "internal error" },
+      { success: false, message: "internal error" },
       {
         status: 500,
       }

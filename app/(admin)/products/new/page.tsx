@@ -9,6 +9,7 @@ export default async function Page() {
     console.log(err);
     <h1>エラーが発生しました</h1>;
   }
+
   return (
     <div>
       <h1 className="text-3xl m-2">商品登録画面</h1>

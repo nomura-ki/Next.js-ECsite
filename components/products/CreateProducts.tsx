@@ -17,35 +17,28 @@ export default function CreateProducts() {
   const [category_id, setcategory_id] = useState<string>("");
   const [dispCategory, setDispCategory] = useState<Category[]>([]);
   const [stock, setStock] = useState<number>(0);
-  const [files, setFiles] = useState<File[]>([]);
+  // const [files, setFiles] = useState<File[]>([]);
+  const [imageArr, setImageArr] = useState<string[]>([]);
+  const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const router = useRouter();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const eventFiles = event.target.files;
-    if (!eventFiles) {
-      setError("画像ファイルが空です");
-      return;
-    }
-
-    console.log("eventFiles", eventFiles);
-
-    const selectedFiles: File[] = Array.from(eventFiles);
-
-    console.log("selectedFiles:", selectedFiles);
-
-    setFiles(selectedFiles);
-
-    console.log("files:", files);
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const eventFiles = event.target.files;
+  //   if (!eventFiles) {
+  //     setError("画像ファイルが空です");
+  //     return;
+  //   }
+  //   const selectedFiles: File[] = Array.from(eventFiles);
+  //   setFiles(selectedFiles);
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     const formData = new FormData();
-    files.forEach((file) => {
-      formData.append(`file[]`, file);
-      console.log(`file[]`, file);
+    checkedValues.forEach((file) => {
+      formData.append("file", file);
     });
 
     formData.append("name", name);
@@ -77,6 +70,16 @@ export default function CreateProducts() {
     }
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+
+    if (checked) {
+      setCheckedValues([...checkedValues, value]);
+    } else {
+      setCheckedValues(checkedValues.filter((item) => item !== value));
+    }
+  };
+
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
@@ -84,6 +87,17 @@ export default function CreateProducts() {
         setDispCategory(data.data);
       });
   }, []);
+
+  useEffect(() => {
+    fetch("/api/products/images")
+      .then((res) => res.json())
+      .then((data) => {
+        setImageArr(data.data);
+      });
+  }, []);
+
+  console.log("imageArr", imageArr);
+  console.log("image", checkedValues);
 
   return (
     <div>
@@ -168,10 +182,10 @@ export default function CreateProducts() {
             />
           </label>
         </div>
-        <div>
-          <label>画像を選択してください</label>
-          <br />
-          {/* <input
+        {/* <div> */}
+        {/* <label>画像を選択してください</label>
+          <br /> */}
+        {/* <input
             type="file"
             onChange={(e) => {
               const files = e.currentTarget.files;
@@ -182,14 +196,14 @@ export default function CreateProducts() {
             multiple
             required
           /> */}
-          <input
+        {/* <input
             type="file"
             multiple
             onChange={handleFileChange}
             required
             accept="image/*"
-          />
-        </div>
+          /> */}
+        {/* </div> */}
         {/* <div>
           <ul>
             {files.map((file, index) => {
@@ -197,6 +211,28 @@ export default function CreateProducts() {
 })}
           </ul>
         </div> */}
+        <div>
+          <fieldset>
+            <legend>画像を選択</legend>
+            {imageArr.map((image) => {
+              return (
+                <div key={image}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="image"
+                      value={image}
+                      checked={checkedValues.includes(image)}
+                      onChange={handleCheckboxChange}
+                    />
+                    {image}
+                  </label>
+                </div>
+              );
+            })}
+            <p>選択中画像：{checkedValues.join(",")}</p>
+          </fieldset>
+        </div>
         <div>
           <button
             type="submit"

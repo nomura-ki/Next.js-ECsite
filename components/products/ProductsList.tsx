@@ -24,6 +24,10 @@ export default function ProductsList({
     if (data.success) setProducts(data.data.products);
   };
 
+  products.map((p) => {
+    console.log(p.imageUrls[0]);
+  });
+
   return (
     <div className="container mx-auto p-4">
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">

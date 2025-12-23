@@ -78,12 +78,10 @@ export async function POST(req: NextRequest) {
     const token = getUserFromReq(req);
 
     if (!token) {
-      return NextResponse.json({ errorl: "認証失敗" }, { status: 401 });
+      return NextResponse.json({ error: "認証失敗" }, { status: 401 });
     }
 
     const formData = await req.formData();
-
-    console.log(formData);
 
     // type File = {
     //   size: number;
@@ -92,26 +90,17 @@ export async function POST(req: NextRequest) {
     //   lastModified: number;
     // };
 
-    const files = formData.getAll("file[]");
+    const files = formData
+      .getAll("file")
+      .filter((data): data is File => data instanceof File);
     const name = String(formData.get("name"));
     const price = Number(formData.get("price"));
     const description = String(formData.get("description"));
     const category_id = String(formData.get("category_id"));
     const stock = Number(formData.get("stock"));
 
-    console.log(files);
-    console.log(
-      "name",
-      name,
-      "price",
-      price,
-      "desc",
-      description,
-      "catgo",
-      category_id,
-      "stock",
-      stock
-    );
+    // const uploadDir = path.join(process.cwd(), "public", "productImages");
+    // const imageUrls = await saveFiles(files, uploadDir);
 
     const changeFileFormat = (dir: string) => {
       const fileName: string[] = [];
@@ -128,15 +117,31 @@ export async function POST(req: NextRequest) {
       return fileName;
     };
 
-    const product_images = changeFileFormat("/productImages/other");
-
-    console.log(product_images);
+    const product_images = changeFileFormat("/productImages");
 
     // const product_images = saveFiles(files, "public/productImages/coffee")
 
     // const newPrice = Number(price);
 
-    // // const newfiles = saveFiles(files, "public/productImages/coffee");
+    // const newfiles = saveFiles(files, "public/productImages/coffee");
+
+    //
+    // console.log("files", files);
+
+    // for (let i = 0; i < files.length; i++) {
+    //   console.log(files[i]);
+    // }
+
+    // const dir = path.join("public", "productImages");
+
+    // const image_url: string[] = [];
+
+    // for (let i = 0; i < files.length; i++) {
+    //   const url = path.join(dir, files[i]);
+    //   image_url.push(path.join("public", "productImages"));
+    // }
+
+    console.log("image_url", product_images);
 
     const seller = await prisma.seller.findUnique({
       where: {
@@ -148,12 +153,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (!seller) {
-      return;
+      return NextResponse.json(
+        { success: false, message: "sellerが存在しません" },
+        { status: 404 }
+      );
     }
-
-    // console.log("price:", price, "typeof:", typeof price);
-    // console.log("formData:", formData);
-    // // console.log(formData[0]);
 
     await prisma.product.create({
       data: {
@@ -163,9 +167,7 @@ export async function POST(req: NextRequest) {
         stock,
         category_id,
         seller_id: seller.id,
-        product_images: {
-          create: product_images.map((image_url) => ({ image_url })),
-        },
+        product_images,
       },
     });
 

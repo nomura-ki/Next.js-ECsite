@@ -60,6 +60,7 @@ export async function saveFiles(
     urls.push(
       `${uploadDir.replace(process.cwd() + "/public", "")}/${fileName}`
     );
+    urls.push(`/productImages/${fileName}`);
   }
   return urls;
 }

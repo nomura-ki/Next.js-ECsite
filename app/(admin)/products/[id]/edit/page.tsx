@@ -1,6 +1,5 @@
 // TODO: 商品編集画面の作成
 import BackButton from "@/components/ui/BackButton";
-import DeleteProducts from "@/components/products/DeleteProducts";
 import ProductDeleteButton from "@/components/products/ProductDeleteButton";
 
 interface Params {

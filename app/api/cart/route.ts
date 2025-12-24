@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserFromReq } from "@/lib/auth";
 import { errorResponse, successResponse } from "@/lib/response";
-import { CartItemWithProduct, formatCartItem } from "@/lib/utils";
-import { format } from "path";
-import { error } from "console";
+import { formatCartItem } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   // TODO: カート取得APIの作成
@@ -12,11 +10,9 @@ export async function GET(req: NextRequest) {
     const token = getUserFromReq(req);
 
     if (!token) {
-      console.log("認証失敗");
+      console.error("認証失敗");
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
     }
-
-    console.log("トークン" + token.userId);
 
     const cart = await prisma.cartItem.findMany({
       orderBy: {
@@ -52,6 +48,7 @@ export async function GET(req: NextRequest) {
 
     return successResponse({ cartItems });
   } catch (err) {
+    console.error(err);
     return errorResponse("cart GETapi error");
   }
 }
@@ -100,6 +97,7 @@ export async function POST(req: NextRequest) {
       cart,
     });
   } catch (err) {
+    console.error(err);
     return errorResponse("error");
   }
 }
@@ -110,7 +108,7 @@ export async function PUT(req: NextRequest) {
     const token = getUserFromReq(req);
 
     if (!token) {
-      console.log("認証失敗");
+      console.error("認証失敗");
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
     }
 
@@ -126,7 +124,7 @@ export async function PUT(req: NextRequest) {
     });
 
     if (!isExist) {
-      console.log("カートに商品が存在しません");
+      console.error("カートに商品が存在しません");
       return NextResponse.json(
         { error: "リソースが見つかりません" },
         { status: 404 }
@@ -171,16 +169,12 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   // TODO: カート削除APIの作成
   try {
-    // const raw = await req.text();
-    // console.log("raw body:", raw);
     const token = getUserFromReq(req);
 
     if (!token) {
-      console.log("認証失敗");
+      console.error("認証失敗");
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
     }
-
-    // console.log(token.userId);
 
     const { productId } = await req.json();
 
@@ -194,7 +188,7 @@ export async function DELETE(req: NextRequest) {
     });
 
     if (!isExist) {
-      console.log("カートに商品が存在しません");
+      console.error("カートに商品が存在しません");
       return NextResponse.json(
         { error: "リソースが見つかりません" },
         { status: 404 }
@@ -209,10 +203,10 @@ export async function DELETE(req: NextRequest) {
         },
       },
     });
-    console.log("商品をカートから削除しました。");
 
     return successResponse({ message: "カートから商品を削除しました" });
   } catch (err) {
+    console.error(err);
     return errorResponse("削除に失敗しました！");
   }
 }

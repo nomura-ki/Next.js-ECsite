@@ -1,6 +1,7 @@
 // TODO: 注文詳細画面の作成
 
 import BackButton from "@/components/ui/BackButton";
+import DeleteOrder from "@/components/order/DeleteOrder";
 
 interface Params {
   id: string;
@@ -50,8 +51,6 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     console.error(err);
     return <div>エラーが発生しました</div>;
   }
-
-  console.log(order, orderItem);
 
   return (
     <div>
@@ -150,6 +149,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
           </tbody>
         </table>
       </div>
+      <DeleteOrder id={id} />
       <BackButton href="/orders" label="戻る" />
     </div>
   );

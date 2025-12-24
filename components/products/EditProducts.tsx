@@ -3,24 +3,72 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function CreateProducts() {
-  type Category = {
-    id: string;
-    name: string;
-    description: string;
-  };
+type Category = {
+  id: string;
+  name: string;
+  description: string;
+};
 
+type image = {
+  image_url: string;
+};
+
+export default function EditProducts({ id }: { id: string }) {
   const [error, setError] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
-  const [category_id, setcategory_id] = useState<string>("");
-  const [dispCategory, setDispCategory] = useState<Category[]>([]);
+  const [category_id, setCategory_id] = useState<string>("");
+  const [category, setCategory] = useState<Category[]>([]);
   const [stock, setStock] = useState<number>(0);
-  // const [files, setFiles] = useState<File[]>([]);
   const [imageArr, setImageArr] = useState<string[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const router = useRouter();
+
+  const dir = "/productImages/other/";
+
+  useEffect(() => {
+    fetch(`/api/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const product = data.data.products[0].product;
+        setName(product.name);
+        setPrice(product.price);
+        setDescription(product.description);
+        setCategory_id(product.category_id);
+        setStock(product.stock);
+        const imageurl: string[] = data.data.products.map((image: image) => {
+          return image.image_url.replace(dir, "");
+        });
+        setCheckedValues(imageurl);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    fetch(`/api/categories`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCategory(data.data);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/products/images")
+      .then((res) => res.json())
+      .then((data) => {
+        setImageArr(data.data);
+      });
+  }, []);
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+
+    if (checked) {
+      setCheckedValues([...checkedValues, value]);
+    } else {
+      setCheckedValues(checkedValues.filter((item) => item !== value));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +80,8 @@ export default function CreateProducts() {
         return;
       }
 
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const res = await fetch(`/api/products/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
@@ -48,43 +96,17 @@ export default function CreateProducts() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "情報の登録に失敗しました");
+        setError(data.message || "エラーが発生しました");
         return;
       }
 
       router.push("/products");
     } catch (err) {
       console.error(err);
-      setError("商品情報の登録に失敗しました");
+      setError("商品の更新に失敗しました");
       return;
     }
   };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-
-    if (checked) {
-      setCheckedValues([...checkedValues, value]);
-    } else {
-      setCheckedValues(checkedValues.filter((item) => item !== value));
-    }
-  };
-
-  useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        setDispCategory(data.data);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/products/images")
-      .then((res) => res.json())
-      .then((data) => {
-        setImageArr(data.data);
-      });
-  }, []);
 
   return (
     <div>
@@ -125,7 +147,7 @@ export default function CreateProducts() {
         <div>
           <fieldset>
             <legend>カテゴリー</legend>
-            {dispCategory.map((category) => {
+            {category.map((category) => {
               return (
                 <div key={category.id}>
                   <label>
@@ -133,7 +155,8 @@ export default function CreateProducts() {
                       type="radio"
                       name="category"
                       value={category.id}
-                      onChange={(e) => setcategory_id(e.target.value)}
+                      onChange={(e) => setCategory_id(e.target.value)}
+                      checked={category_id === category.id}
                       required
                     />
                     {category.name}
@@ -181,7 +204,7 @@ export default function CreateProducts() {
             type="submit"
             className="m-3 mb-4 px-4 py-2 bg-blue-300 text-gray-800 rounded-lg hover:bg-blue-400 transition"
           >
-            商品登録する
+            商品更新する
           </button>
         </div>
         {error && <p>{error}</p>}

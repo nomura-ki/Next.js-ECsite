@@ -36,11 +36,11 @@ export async function POST(req: NextRequest) {
   // TODO: 注文登録APIの作成
 
   try {
-    await prisma.$transaction(async (prisma) => {
+    const order = await prisma.$transaction(async (prisma) => {
       const token = getUserFromReq(req);
 
       if (!token) {
-        return NextResponse.json({ error: "認証失敗" }, { status: 401 });
+        return { ok: false, message: "認証失敗", status: 401 };
       }
 
       // todo: カート内のquantity取得
@@ -68,13 +68,19 @@ export async function POST(req: NextRequest) {
         });
 
         if (!productQuantity) {
-          throw new Error(`product_id: ${c.product_id}の商品は存在しません`);
+          return {
+            ok: false,
+            message: `product_id: ${c.product_id}の商品は存在しません`,
+            status: 404,
+          };
         }
 
         if (c.quantity > productQuantity.stock) {
-          throw new Error(
-            `product_id: ${productQuantity.name}の商品の在庫が不足しています`
-          );
+          return {
+            ok: false,
+            message: `商品名: ${productQuantity.name}の商品の在庫が不足しています`,
+            status: 404,
+          };
         }
 
         // todo: 在庫個数変更
@@ -121,7 +127,11 @@ export async function POST(req: NextRequest) {
         });
 
         if (!productPrice) {
-          throw new Error(`product_id: ${c.product_id}が存在しません`);
+          return {
+            ok: false,
+            message: `product_id: ${c.product_id}が存在しません`,
+            status: 404,
+          };
         }
         subtotal.push(productPrice.price * c.quantity);
       }
@@ -153,7 +163,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (!price) {
-          throw new Error("商品が存在しません");
+          return { ok: false, message: "商品が存在しません", status: 404 };
         }
 
         await prisma.orderItem.create({
@@ -172,11 +182,24 @@ export async function POST(req: NextRequest) {
           user_id: token.userId,
         },
       });
+
+      return { ok: true, message: "注文処理が完了しました" };
     });
-    return NextResponse.json({
-      success: true,
-      message: "注文処理が成功しました",
-    });
+
+    if (order.ok) {
+      return NextResponse.json({
+        success: true,
+        message: order.message,
+      });
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: order.message,
+        },
+        { status: order.status }
+      );
+    }
   } catch (err) {
     console.log(err);
     return NextResponse.json(

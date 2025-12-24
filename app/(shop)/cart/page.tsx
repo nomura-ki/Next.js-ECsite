@@ -15,13 +15,13 @@ export default async function Page() {
     });
 
     if (!res.ok) {
-      console.log("cart res error");
+      console.error("cart res error");
       return;
     }
 
     data = await res.json();
   } catch (err) {
-    console.log("cart catch error");
+    console.error(err);
     return <div>エラーが発生しました</div>;
   }
 

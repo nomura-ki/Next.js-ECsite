@@ -14,11 +14,11 @@ export default async function Products() {
     data = await res.json();
 
     if (!res.ok) {
-      console.log("error");
+      console.error("error");
       return;
     }
   } catch (err) {
-    console.log("error");
+    console.error("error");
     return <div>エラーが発生しました</div>;
   }
 

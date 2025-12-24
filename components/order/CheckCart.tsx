@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CartItemWithProduct } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,7 @@ export default function CheckCart({
 }) {
   const [products, setProducts] = useState(initialCartProducts);
   const [message, setMessage] = useState("");
+  const [isStock, setIsStock] = useState<boolean>(true);
   const router = useRouter();
 
   let total = 0;
@@ -33,7 +34,7 @@ export default function CheckCart({
       });
 
       if (!DelRes) {
-        console.log("DeleteResponse error");
+        setMessage("DeleteResponse error");
         return;
       }
       const DelData = await DelRes.json();
@@ -44,7 +45,7 @@ export default function CheckCart({
       });
 
       if (!GetRes) {
-        console.log("GetResponse error");
+        setMessage("GetResponse error");
         return;
       }
       const GetData = await GetRes.json();
@@ -76,7 +77,7 @@ export default function CheckCart({
       });
 
       if (!UpdateRes) {
-        console.log("UpdateRes error");
+        setMessage("UpdateRes error");
         return;
       }
       const UpdateData = await UpdateRes.json();
@@ -87,13 +88,12 @@ export default function CheckCart({
       });
 
       if (!GetRes) {
-        console.log("GetResponse error");
+        setMessage("GetResponse error");
         return;
       }
       const GetData = await GetRes.json();
 
       const NewData: CartItemWithProduct[] = GetData.data.cartItems;
-      console.log(NewData);
       setProducts(NewData);
 
       setMessage(
@@ -106,6 +106,16 @@ export default function CheckCart({
       setMessage("更新中にエラーが発生しました");
     }
   };
+
+  useEffect(() => {
+    products.map((p) => {
+      if (p.product.stock < p.quantity) {
+        setIsStock(false);
+      } else {
+        setIsStock(true);
+      }
+    });
+  }, [products]);
 
   return (
     <div>
@@ -167,17 +177,17 @@ export default function CheckCart({
         </tbody>
       </table>
 
-      {products.length > 0 && (
-        <button
-          type="button"
-          onClick={() => router.push("/orders/comfirm")}
-          className="m-3 mb-4 px-4 py-2 bg-blue-300 text-gray-800 rounded-lg hover:bg-blue-400 transition"
-        >
-          {" "}
-          購入手続きへ
-        </button>
-      )}
       {products.length === 0 && <h1 className="m-3">カートが空です</h1>}
+
+      {products.map(
+        (p) =>
+          p.product.stock < p.quantity && (
+            <div key={p.id} className="text-red-600">
+              {p.product.name}の在庫が足りません
+              {isStock}
+            </div>
+          )
+      )}
 
       {message && (
         <p
@@ -189,6 +199,17 @@ export default function CheckCart({
         >
           {message}
         </p>
+      )}
+
+      {products.length > 0 && isStock === true && (
+        <button
+          type="button"
+          onClick={() => router.push("/orders/comfirm")}
+          className="m-3 mb-4 px-4 py-2 bg-blue-300 text-gray-800 rounded-lg hover:bg-blue-400 transition"
+        >
+          {" "}
+          購入手続きへ
+        </button>
       )}
     </div>
   );

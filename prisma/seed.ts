@@ -146,7 +146,10 @@ async function main() {
       seller_id: seller1.id,
       product_images: {
         create: [
-          { image_url: "/productImages/other/smartphone.jpg", sort_order: 0 },
+          {
+            image_url: "/productImages/Electrical appliances/smartphone.jpg",
+            sort_order: 0,
+          },
         ],
       },
     },
@@ -162,7 +165,10 @@ async function main() {
       seller_id: seller2.id,
       product_images: {
         create: [
-          { image_url: "/productImages/other/laptop.jpg", sort_order: 0 },
+          {
+            image_url: "/productImages/Electrical appliances/laptop.jpg",
+            sort_order: 0,
+          },
         ],
       },
     },
@@ -177,7 +183,7 @@ async function main() {
       category_id: category2.id,
       seller_id: seller1.id,
       product_images: {
-        create: [{ image_url: "/productImages/other/book.jpg", sort_order: 0 }],
+        create: [{ image_url: "/productImages/book/book.jpg", sort_order: 0 }],
       },
     },
   });

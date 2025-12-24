@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import { verifyToken, getUserFromReq } from "@/lib/auth";
-import { saveFiles } from "@/lib/utils";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
+import { getUserFromReq } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   // TODO: 商品一覧取得APIの作成
@@ -81,67 +77,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
     }
 
-    const formData = await req.formData();
-
-    // type File = {
-    //   size: number;
-    //   type: string;
-    //   name: string;
-    //   lastModified: number;
-    // };
-
-    const files = formData
-      .getAll("file")
-      .filter((data): data is File => data instanceof File);
-    const name = String(formData.get("name"));
-    const price = Number(formData.get("price"));
-    const description = String(formData.get("description"));
-    const category_id = String(formData.get("category_id"));
-    const stock = Number(formData.get("stock"));
-
-    // const uploadDir = path.join(process.cwd(), "public", "productImages");
-    // const imageUrls = await saveFiles(files, uploadDir);
-
-    const changeFileFormat = (dir: string) => {
-      const fileName: string[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        if (file instanceof File) {
-          fileName.push(`${dir}/${file.name}`);
-        } else {
-          throw new Error("ファイルの型が違います");
-        }
-      }
-      return fileName;
-    };
-
-    const product_images = changeFileFormat("/productImages");
-
-    // const product_images = saveFiles(files, "public/productImages/coffee")
-
-    // const newPrice = Number(price);
-
-    // const newfiles = saveFiles(files, "public/productImages/coffee");
-
-    //
-    // console.log("files", files);
-
-    // for (let i = 0; i < files.length; i++) {
-    //   console.log(files[i]);
-    // }
-
-    // const dir = path.join("public", "productImages");
-
-    // const image_url: string[] = [];
-
-    // for (let i = 0; i < files.length; i++) {
-    //   const url = path.join(dir, files[i]);
-    //   image_url.push(path.join("public", "productImages"));
-    // }
-
-    console.log("image_url", product_images);
+    const { name, price, description, stock, category_id, checkedValues } =
+      await req.json();
 
     const seller = await prisma.seller.findUnique({
       where: {
@@ -159,6 +96,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const dir = "/productImages/other";
+
     await prisma.product.create({
       data: {
         name,
@@ -167,7 +106,11 @@ export async function POST(req: NextRequest) {
         stock,
         category_id,
         seller_id: seller.id,
-        product_images,
+        product_images: {
+          create: checkedValues.map((file: string) => ({
+            image_url: `${dir}/${file}`,
+          })),
+        },
       },
     });
 
@@ -179,8 +122,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-export async function PUT(req: NextRequest) {
-  // TODO: 商品更新APIの作成
 }

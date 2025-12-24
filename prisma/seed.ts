@@ -75,6 +75,27 @@ async function main() {
     },
   });
 
+  const category3 = await prisma.category.upsert({
+    where: { id: "33333333-3333-3333-3333-333333333333" },
+    update: {
+      name: "食品",
+    },
+    create: {
+      id: "33333333-3333-3333-3333-333333333333",
+      name: "食品",
+    },
+  });
+
+  const category4 = await prisma.category.upsert({
+    where: { id: "44444444-4444-4444-4444-444444444444" },
+    update: {
+      name: "飲料",
+    },
+    create: {
+      id: "44444444-4444-4444-4444-444444444444",
+      name: "飲料",
+    },
+  });
   console.log("カテゴリを登録/更新しました");
 
   // ===============================
@@ -125,7 +146,7 @@ async function main() {
       seller_id: seller1.id,
       product_images: {
         create: [
-          { image_url: "/productImages/phone/smartphone.jpg", sort_order: 0 },
+          { image_url: "/productImages/other/smartphone.jpg", sort_order: 0 },
         ],
       },
     },
@@ -140,7 +161,9 @@ async function main() {
       category_id: category1.id,
       seller_id: seller2.id,
       product_images: {
-        create: [{ image_url: "/productImages/pc/laptop.jpg", sort_order: 0 }],
+        create: [
+          { image_url: "/productImages/other/laptop.jpg", sort_order: 0 },
+        ],
       },
     },
   });
@@ -154,7 +177,7 @@ async function main() {
       category_id: category2.id,
       seller_id: seller1.id,
       product_images: {
-        create: [{ image_url: "/productImages/book/book.jpg", sort_order: 0 }],
+        create: [{ image_url: "/productImages/other/book.jpg", sort_order: 0 }],
       },
     },
   });

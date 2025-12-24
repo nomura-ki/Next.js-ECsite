@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 
 export async function GET(req: NextRequest) {
   try {
-    const dirPath = path.join(process.cwd(), "public", "productImages");
+    const dirPath: string = path.join(
+      process.cwd(),
+      "public",
+      "productImages",
+      "other"
+    );
 
     const files: string[] = fs
       .readdirSync(dirPath)
       .filter((file) => file.endsWith("png") || file.endsWith("jpg"));
 
-    console.log(files);
+    files.sort();
 
     return NextResponse.json({ success: true, data: files });
   } catch (err) {

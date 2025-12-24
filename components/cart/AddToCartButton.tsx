@@ -39,7 +39,7 @@ export default function AddToCartButton({ productId, stock }: Props) {
         <label>数量:</label>
         <input
           type="number"
-          min={1}
+          min={0}
           max={stock}
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}

@@ -21,11 +21,14 @@ export default function EditProducts({ id }: { id: string }) {
   const [category_id, setCategory_id] = useState<string>("");
   const [category, setCategory] = useState<Category[]>([]);
   const [stock, setStock] = useState<number>(0);
+  const [folder, setFolder] = useState<string>("");
+  const [folderArr, setFolderArr] = useState<string[]>([]);
   const [imageArr, setImageArr] = useState<string[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
+  const [currentImages, setCurrentImage] = useState<string[]>([]);
   const router = useRouter();
 
-  const dir = "/productImages/other/";
+  const dir = "/productImages/";
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -40,7 +43,7 @@ export default function EditProducts({ id }: { id: string }) {
         const imageurl: string[] = data.data.products.map((image: image) => {
           return image.image_url.replace(dir, "");
         });
-        setCheckedValues(imageurl);
+        setCurrentImage(imageurl);
       });
   }, [id]);
 
@@ -50,15 +53,27 @@ export default function EditProducts({ id }: { id: string }) {
       .then((data) => {
         setCategory(data.data);
       });
+
+    fetch(`/api/products/folders`)
+      .then((res) => res.json())
+      .then((data) => {
+        setFolderArr(data.data);
+      });
   }, []);
 
   useEffect(() => {
-    fetch("/api/products/images")
-      .then((res) => res.json())
-      .then((data) => {
-        setImageArr(data.data);
-      });
-  }, []);
+    if (folder) {
+      fetch("/api/products/images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setImageArr(data.data);
+        });
+    }
+  }, [folder]);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
@@ -179,26 +194,59 @@ export default function EditProducts({ id }: { id: string }) {
         </div>
         <div>
           <fieldset>
-            <legend>画像を選択</legend>
-            {imageArr.map((image) => {
+            <legend>画像フォルダーを選択</legend>
+            {folderArr.map((folder) => {
               return (
-                <div key={image}>
+                <div key={folder}>
                   <label>
                     <input
-                      type="checkbox"
-                      name="image"
-                      value={image}
-                      checked={checkedValues.includes(image)}
-                      onChange={handleCheckboxChange}
+                      type="radio"
+                      name="folder"
+                      value={folder}
+                      onChange={(e) => setFolder(e.target.value)}
+                      required
                     />
-                    {image}
+                    {folder}
                   </label>
                 </div>
               );
             })}
-            <p>選択中画像：{checkedValues.join(",")}</p>
           </fieldset>
         </div>
+
+        {imageArr.length > 0 && (
+          <div>
+            <fieldset>
+              <legend>画像を選択</legend>
+              {imageArr.map((image) => {
+                return (
+                  <div key={image}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="image"
+                        value={image}
+                        checked={checkedValues.includes(image)}
+                        onChange={handleCheckboxChange}
+                      />
+                      {image}
+                    </label>
+                  </div>
+                );
+              })}
+              <p>
+                選択中変更後画像：
+                <br />
+                {checkedValues.join(",")}
+              </p>
+            </fieldset>
+          </div>
+        )}
+        <p>
+          現在使用画像：
+          <br />
+          {currentImages}
+        </p>
         <div>
           <button
             type="submit"

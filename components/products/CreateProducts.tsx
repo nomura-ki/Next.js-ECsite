@@ -17,7 +17,8 @@ export default function CreateProducts() {
   const [category_id, setcategory_id] = useState<string>("");
   const [dispCategory, setDispCategory] = useState<Category[]>([]);
   const [stock, setStock] = useState<number>(0);
-  // const [files, setFiles] = useState<File[]>([]);
+  const [folderArr, setFolderArr] = useState<string[]>([]);
+  const [folder, setFolder] = useState<string>("");
   const [imageArr, setImageArr] = useState<string[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const router = useRouter();
@@ -76,15 +77,27 @@ export default function CreateProducts() {
       .then((data) => {
         setDispCategory(data.data);
       });
+
+    fetch("/api/products/folders")
+      .then((res) => res.json())
+      .then((data) => {
+        setFolderArr(data.data);
+      });
   }, []);
 
   useEffect(() => {
-    fetch("/api/products/images")
-      .then((res) => res.json())
-      .then((data) => {
-        setImageArr(data.data);
-      });
-  }, []);
+    if (folder) {
+      fetch("/api/products/images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setImageArr(data.data);
+        });
+    }
+  }, [folder]);
 
   return (
     <div>
@@ -156,26 +169,50 @@ export default function CreateProducts() {
         </div>
         <div>
           <fieldset>
-            <legend>画像を選択</legend>
-            {imageArr.map((image) => {
+            <legend>画像フォルダーを選択</legend>
+            {folderArr.map((folder) => {
               return (
-                <div key={image}>
+                <div key={folder}>
                   <label>
                     <input
-                      type="checkbox"
-                      name="image"
-                      value={image}
-                      checked={checkedValues.includes(image)}
-                      onChange={handleCheckboxChange}
+                      type="radio"
+                      name="folder"
+                      value={folder}
+                      onChange={(e) => setFolder(e.target.value)}
+                      required
                     />
-                    {image}
+                    {folder}
                   </label>
                 </div>
               );
             })}
-            <p>選択中画像：{checkedValues.join(",")}</p>
           </fieldset>
         </div>
+
+        {imageArr.length > 0 && (
+          <div>
+            <fieldset>
+              <legend>画像を選択</legend>
+              {imageArr.map((image) => {
+                return (
+                  <div key={image}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="image"
+                        value={image}
+                        checked={checkedValues.includes(image)}
+                        onChange={handleCheckboxChange}
+                      />
+                      {image}
+                    </label>
+                  </div>
+                );
+              })}
+              <p>選択中画像：{checkedValues.join(",")}</p>
+            </fieldset>
+          </div>
+        )}
         <div>
           <button
             type="submit"

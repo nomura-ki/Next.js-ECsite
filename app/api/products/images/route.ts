@@ -2,17 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
+    const { folder } = await req.json();
+
+    if (!folder) {
+      return NextResponse.json(
+        { success: false, message: "folderを取得できません" },
+        { status: 500 }
+      );
+    }
+
     const dirPath: string = path.join(
       process.cwd(),
       "public",
       "productImages",
-      "other"
+      folder
     );
 
-    const files: string[] = fs
-      .readdirSync(dirPath)
+    console.log(dirPath);
+
+    const files = fs
+      .readdirSync(dirPath, { withFileTypes: true })
+      .filter((dirent) => dirent.isFile())
+      .map((file) => file.name)
       .filter((file) => file.endsWith("png") || file.endsWith("jpg"));
 
     files.sort();

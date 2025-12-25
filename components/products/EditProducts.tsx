@@ -234,19 +234,21 @@ export default function EditProducts({ id }: { id: string }) {
                   </div>
                 );
               })}
-              <p>
-                選択中変更後画像：
-                <br />
-                {checkedValues.join(",")}
-              </p>
+              <div>
+                <p>選択中変更後画像：</p>
+                {checkedValues.map((value, index) => (
+                  <p key={index}>{value}</p>
+                ))}
+              </div>
             </fieldset>
           </div>
         )}
-        <p>
-          現在使用画像：
-          <br />
-          {currentImages}
-        </p>
+        <div>
+          <p>現在使用中画像：</p>
+          {currentImages.map((value, index) => (
+            <p key={index}>{value}</p>
+          ))}
+        </div>
         <div>
           <button
             type="submit"

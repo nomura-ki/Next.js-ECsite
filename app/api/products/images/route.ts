@@ -20,12 +20,11 @@ export async function POST(req: NextRequest) {
       folder
     );
 
-    console.log(dirPath);
-
     const files = fs
       .readdirSync(dirPath, { withFileTypes: true })
       .filter((dirent) => dirent.isFile())
       .map((file) => file.name)
+      .map((file) => `${folder}/${file}`)
       .filter((file) => file.endsWith("png") || file.endsWith("jpg"));
 
     files.sort();

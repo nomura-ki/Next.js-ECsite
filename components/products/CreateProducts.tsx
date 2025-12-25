@@ -209,7 +209,12 @@ export default function CreateProducts() {
                   </div>
                 );
               })}
-              <p>選択中画像：{checkedValues.join(",")}</p>
+              <div>
+                <p>選択中画像：</p>
+                {checkedValues.map((value, index) => (
+                  <p key={index}>{value}</p>
+                ))}
+              </div>
             </fieldset>
           </div>
         )}

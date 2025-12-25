@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const dir = "/productImages/other";
+    const dir = "/productImages";
 
     await prisma.product.create({
       data: {

@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
 
+    folders.sort();
+
     return NextResponse.json({ success: true, data: folders });
   } catch (err) {
     console.error(err);

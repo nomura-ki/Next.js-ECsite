@@ -70,9 +70,7 @@ export async function POST(req: NextRequest) {
         },
       },
       update: {
-        quantity: {
-          increment: quantity,
-        },
+        quantity,
       },
       create: {
         user_id: token.userId,
@@ -126,7 +124,7 @@ export async function PUT(req: NextRequest) {
         },
       },
       data: {
-        quantity: quantity,
+        quantity,
       },
     });
 

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 type Props = {
   productId: string;
   stock: number;
+  cartQuantity: number;
 };
 
 type cartItem = {
@@ -21,37 +22,27 @@ type cartItem = {
   subtotal: number;
 };
 
-export default function AddToCartButton({ productId, stock }: Props) {
-  const [quantity, setQuantity] = useState<number>(0);
+export default function AddToCartButton({
+  productId,
+  stock,
+  cartQuantity,
+}: Props) {
+  const [quantity, setQuantity] = useState<number>(cartQuantity);
   const [message, setMessage] = useState<string>("");
-  const [isOk, setIsOk] = useState<boolean>(false);
   const router = useRouter();
-
-  useEffect(() => {
-    fetch("/api/cart", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        data.data.cartItems.map((cartItem: cartItem) => {
-          if (cartItem.product.id === productId) {
-            setQuantity(cartItem.quantity);
-          }
-        });
-      });
-  }, [productId]);
-
-  // setIsOk(quantity > 0 && quantity <= stock);
-
-  const errorMessage =
-    quantity > stock
-      ? "エラー：在庫が足りません"
-      : quantity === 0
-      ? "未選択：選択している個数が0個です"
-      : "";
 
   const handleAddToCart = async () => {
     setMessage("");
 
     try {
+      if (quantity <= 0) {
+        setMessage("未選択：個数は１つ以上選んでください");
+        return;
+      } else if (stock < quantity) {
+        setMessage("エラー：在庫が足りません");
+        return;
+      }
+
       const res = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -76,7 +67,6 @@ export default function AddToCartButton({ productId, stock }: Props) {
     const value = Number(e.target.value);
 
     setQuantity(value);
-    setIsOk(true);
   };
 
   return (
@@ -93,18 +83,14 @@ export default function AddToCartButton({ productId, stock }: Props) {
         />
       </div>
       <div>
-        {isOk && (
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            カートに追加
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          カートに追加
+        </button>
       </div>
-
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
       {message && (
         <p

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, getTokenFromReq, getUserFromReq } from "@/lib/auth";
-import { v4 as uuidv4 } from "uuid";
+import { getUserFromReq } from "@/lib/auth";
 
-export async function GET(req: NextRequest) {
-  // TODO: 注文一覧取得APIの作成
+export async function GET() {
   try {
     const order = await prisma.order.findMany({
       select: {
@@ -33,8 +31,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  // TODO: 注文登録APIの作成
-
   try {
     const order = await prisma.$transaction(async (prisma) => {
       const token = getUserFromReq(req);
@@ -43,7 +39,6 @@ export async function POST(req: NextRequest) {
         return { ok: false, message: "認証失敗", status: 401 };
       }
 
-      // todo: カート内のquantity取得
       const cartQuantity = await prisma.cartItem.findMany({
         where: {
           user_id: token.userId,
@@ -54,7 +49,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // todo: 在庫取得＆在庫確認
       for (const c of cartQuantity) {
         const productQuantity = await prisma.product.findUnique({
           where: {
@@ -83,7 +77,6 @@ export async function POST(req: NextRequest) {
           };
         }
 
-        // todo: 在庫個数変更
         const newStock = productQuantity.stock - c.quantity;
 
         await prisma.product.update({
@@ -96,7 +89,6 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // todo: orderに登録
       const { name, postCode, address, phone, payment } = await req.json();
 
       const orderNumber = `ORD-${new Date()
@@ -149,9 +141,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      console.log("orderid:", orderNumber);
-
-      // todo: orderitemsに登録
       for (const c of cartItems) {
         const price = await prisma.product.findUnique({
           where: {
@@ -176,7 +165,6 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // todo: cartitemから削除
       await prisma.cartItem.deleteMany({
         where: {
           user_id: token.userId,
@@ -201,7 +189,7 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return NextResponse.json(
       { success: false, message: "注文処理が失敗しました" },
       { status: 500 }

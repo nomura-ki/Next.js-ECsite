@@ -9,7 +9,6 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<Params> }
 ) {
-  // TODO: 注文詳細取得APIの作成
   try {
     const { id } = await params;
 

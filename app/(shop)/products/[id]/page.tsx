@@ -1,4 +1,3 @@
-// TODO: 商品詳細画面の作成
 import ProductImages from "@/components/products/ProductImages";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import BackButton from "@/components/ui/BackButton";
@@ -27,7 +26,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     }
 
     if (!res.ok) {
-      console.log("error");
+      console.error("error");
       return;
     }
   } catch (err) {

@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 import { getUserFromReq } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  // TODO: 商品一覧取得APIの作成
   try {
     const url = new URL(req.url);
     const search = url.searchParams.get("search");
@@ -69,7 +68,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  // TODO: 商品登録APIの作成
   try {
     const token = getUserFromReq(req);
 

@@ -10,7 +10,6 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<Params> }
 ) {
-  // TODO: 商品詳細取得APIの作成
   try {
     const { id } = await params;
 
@@ -33,20 +32,6 @@ export async function GET(
       },
     });
 
-    // const image = products.map((i) => ({
-    //   product_id: i.product_id,
-    //   image_url: i.image_url,
-    //   name: i.product.name,
-    //   price: i.product.price,
-    //   description: i.product.description,
-    //   stock: i.product.stock,
-    // }));
-
-    // // for (let i = 0; image.length > i; i++) {
-    // //   console.log(image[i].image_url);
-    // // }
-    // // console.log("image", image);
-
     return NextResponse.json({
       success: true,
       data: {
@@ -66,7 +51,6 @@ export async function DELETE(
   req: Request,
   { params }: { params: Promise<Params> }
 ) {
-  // TODO: 商品削除APIの作成
   try {
     const { id } = await params;
 
@@ -116,7 +100,6 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<Params> }
 ) {
-  // TODO: 商品更新APIの作成
   try {
     const { id } = await params;
 

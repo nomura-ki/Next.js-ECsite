@@ -5,7 +5,6 @@ import { errorResponse, successResponse } from "@/lib/response";
 import { formatCartItem } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
-  // TODO: カート取得APIの作成
   try {
     const token = getUserFromReq(req);
 
@@ -54,18 +53,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  // TODO: カート登録APIの作成
   try {
-    // const cookieStores = await cookies();
-    // const token = cookieStores.get("token")?.value;
-    // const session = await prisma.session.findUnique({
-    //   where: { token },
-    // });
-
-    // if (!session) {
-    //   return Response.json({ });
-    // }
-
     const token = getUserFromReq(req);
 
     if (!token) {
@@ -103,7 +91,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  // TODO: カート更新APIの作成
   try {
     const token = getUserFromReq(req);
 
@@ -141,24 +128,7 @@ export async function PUT(req: NextRequest) {
       data: {
         quantity: quantity,
       },
-      // include: {
-      //   product: {
-      //     select: {
-      //       id: true,
-      //       name: true,
-      //       price: true,
-      //       stock: true,
-      //       product_images: {
-      //         select: {
-      //           image_url: true,
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
     });
-
-    // const cartItems = cart.map(formatCartItem);
 
     return successResponse({ message: "個数を更新しました" });
   } catch {
@@ -167,7 +137,6 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  // TODO: カート削除APIの作成
   try {
     const token = getUserFromReq(req);
 

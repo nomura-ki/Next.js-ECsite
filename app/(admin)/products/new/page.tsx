@@ -1,12 +1,10 @@
-// TODO: 商品登録画面の作成
-
 import BackButton from "@/components/ui/BackButton";
 import CreateProducts from "@/components/products/CreateProducts";
 
 export default async function Page() {
   try {
   } catch (err) {
-    console.log(err);
+    console.error(err);
     <h1>エラーが発生しました</h1>;
   }
 

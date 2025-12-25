@@ -1,5 +1,3 @@
-// TODO: 購入完了画面の作成
-
 import BackButton from "@/components/ui/BackButton";
 
 export default function Page() {

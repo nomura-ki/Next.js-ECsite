@@ -1,4 +1,3 @@
-// TODO: カート画面の作成
 import BackButton from "@/components/ui/BackButton";
 import { cookies } from "next/headers";
 import CheckCart from "@/components/order/CheckCart";
@@ -26,7 +25,6 @@ export default async function Page() {
   }
 
   const pro: CartItemWithProduct[] = data.data.cartItems;
-  // console.log(pro);
 
   return (
     <div>

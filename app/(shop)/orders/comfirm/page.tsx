@@ -1,5 +1,3 @@
-// TODO: 購入確認画面の作成
-
 import ComfirmCart from "@/components/order/ComfirmCart";
 import BackButton from "@/components/ui/BackButton";
 

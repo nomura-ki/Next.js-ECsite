@@ -1,5 +1,3 @@
-// TODO: 商品一覧画面の作成
-
 import { Product } from "@/types/product";
 import ProductsList from "@/components/products/ProductsList";
 
@@ -18,7 +16,7 @@ export default async function Products() {
       return;
     }
   } catch (err) {
-    console.error("error");
+    console.error(err);
     return <div>エラーが発生しました</div>;
   }
 

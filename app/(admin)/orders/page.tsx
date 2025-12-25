@@ -1,5 +1,3 @@
-// TODO: 注文一覧画面の作成
-
 import BackButton from "@/components/ui/BackButton";
 import { Orders } from "@/lib/utils";
 import Link from "next/link";
@@ -25,7 +23,6 @@ export default async function Page() {
 
   const order: Orders[] = data.data;
 
-  console.log(data);
   return (
     <div>
       <h1 className="text-3xl m-2">注文一覧画面</h1>

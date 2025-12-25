@@ -10,7 +10,6 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/auth/logout", { method: "POST" });
-      // const data = await res.json();
 
       if (res.ok) {
         router.push("/login");

@@ -37,15 +37,14 @@ export default function LoginForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <label>
-          メールアドレス
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
+        <label>メールアドレス</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
         <label>
           パスワード
           <input

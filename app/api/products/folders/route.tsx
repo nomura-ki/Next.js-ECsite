@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const dirPath: string = path.join(process.cwd(), "public", "productImages");
 

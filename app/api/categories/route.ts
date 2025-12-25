@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
 export async function GET() {
-  // TODO: カテゴリー取得APIの作成
   try {
     const category = await prisma.category.findMany({
       orderBy: {

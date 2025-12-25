@@ -1,5 +1,3 @@
-// TODO: 注文詳細画面の作成
-
 import BackButton from "@/components/ui/BackButton";
 import DeleteOrder from "@/components/order/DeleteOrder";
 

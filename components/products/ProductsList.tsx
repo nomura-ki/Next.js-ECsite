@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Product } from "@/types/product";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
 
 export default function ProductsList({
   initialProducts,
@@ -45,10 +46,12 @@ export default function ProductsList({
         {products.map((p) => (
           <li key={p.id} className="border p-2 rounded flex flex-col">
             {p.imageUrls.length > 0 && (
-              <img
+              <Image
                 src={p.imageUrls[0]}
                 alt={p.name}
-                className="w-full h-48 object-cover mb-2"
+                width={100}
+                height={100}
+                className="object-cover mb-2"
               />
             )}
             <h2 className="font-bold text-blue-600 hover:underline mb-1">

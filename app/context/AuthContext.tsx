@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .split("; ")
         .find((row) => row.startsWith("token="));
 
-      if (!cookie) return;
+      if (!cookie) return console.log("no cookie");
 
       const token = cookie.split("=")[1];
 

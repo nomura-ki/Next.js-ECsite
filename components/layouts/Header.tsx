@@ -10,12 +10,11 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/auth/logout", { method: "POST" });
-      const data = await res.json();
 
       if (res.ok) {
         router.push("/login");
       } else {
-        alert("ログアウトに失敗しました");
+        alert("ログアウトに失敗しました！");
       }
     } catch (error) {
       console.error(error);
@@ -36,12 +35,14 @@ export default function Header() {
         {role === "seller" && (
           <>
             <button
+              type="button"
               onClick={() => router.push("/products/new")}
               className="px-3 py-1 bg-green-500 rounded"
             >
               商品登録
             </button>
             <button
+              type="button"
               onClick={() => router.push("/orders")}
               className="px-3 py-1 bg-blue-500 rounded"
             >
@@ -52,6 +53,7 @@ export default function Header() {
 
         {role === "buyer" && (
           <button
+            type="button"
             onClick={() => router.push("/cart")}
             className="px-3 py-1 bg-yellow-500 rounded"
           >
@@ -59,7 +61,11 @@ export default function Header() {
           </button>
         )}
 
-        <button onClick={handleLogout} className="px-3 py-1 bg-red-500 rounded">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="px-3 py-1 bg-red-500 rounded"
+        >
           ログアウト
         </button>
       </div>

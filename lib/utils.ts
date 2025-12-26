@@ -2,13 +2,23 @@ import fs from "fs";
 import path from "path";
 import { CartItem } from "@prisma/client";
 
+export interface Orders {
+  id: string;
+  order_number: string;
+  status: string;
+  total: number;
+  created_at: string;
+}
+
 export interface CartItemWithProduct extends CartItem {
   product: {
     id: string;
     name: string;
     price: number;
+    stock: number;
     product_images: { image_url: string }[];
   };
+  subtotal: number;
 }
 
 export function formatCartItem(cartItem: CartItemWithProduct) {
@@ -18,6 +28,7 @@ export function formatCartItem(cartItem: CartItemWithProduct) {
       id: cartItem.product.id,
       name: cartItem.product.name,
       price: cartItem.product.price,
+      stock: cartItem.product.stock,
       imageUrl: cartItem.product.product_images[0]?.image_url || "",
     },
     quantity: cartItem.quantity,
@@ -49,6 +60,7 @@ export async function saveFiles(
     urls.push(
       `${uploadDir.replace(process.cwd() + "/public", "")}/${fileName}`
     );
+    urls.push(`/productImages/${fileName}`);
   }
   return urls;
 }

@@ -13,10 +13,9 @@ export default function ProductDeleteButton({ id }: { id: string }) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch(`/api/products/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
       });
 
       const data = await res.json();
@@ -37,9 +36,10 @@ export default function ProductDeleteButton({ id }: { id: string }) {
 
   return (
     <button
+      type="button"
       onClick={handleDelete}
       disabled={loading}
-      className="mt-4 w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
     >
       {loading ? "削除中..." : "削除する"}
     </button>

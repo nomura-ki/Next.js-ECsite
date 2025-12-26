@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { CartItemWithProduct } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/ui/BackButton";
 
 export default function CheckCart({
   initialCartProducts,
@@ -211,6 +212,7 @@ export default function CheckCart({
           購入手続きへ
         </button>
       )}
+      <BackButton href="/products" label="買い物を続ける" />
     </div>
   );
 }

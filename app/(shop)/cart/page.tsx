@@ -1,4 +1,3 @@
-import BackButton from "@/components/ui/BackButton";
 import { cookies } from "next/headers";
 import CheckCart from "@/components/order/CheckCart";
 import { CartItemWithProduct } from "@/lib/utils";
@@ -30,7 +29,6 @@ export default async function Page() {
     <div>
       <h1 className="text-3xl m-2">カート</h1>
       <CheckCart initialCartProducts={pro} />
-      <BackButton href="/products" label="買い物を続ける" />
     </div>
   );
 }

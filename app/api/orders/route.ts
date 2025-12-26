@@ -49,10 +49,10 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      for (const c of cartQuantity) {
+      for (const cartInfo of cartQuantity) {
         const productQuantity = await prisma.product.findUnique({
           where: {
-            id: c.product_id,
+            id: cartInfo.product_id,
           },
           select: {
             id: true,
@@ -64,12 +64,12 @@ export async function POST(req: NextRequest) {
         if (!productQuantity) {
           return {
             ok: false,
-            message: `product_id: ${c.product_id}の商品は存在しません`,
+            message: `product_id: ${cartInfo.product_id}の商品は存在しません`,
             status: 404,
           };
         }
 
-        if (c.quantity > productQuantity.stock) {
+        if (cartInfo.quantity > productQuantity.stock) {
           return {
             ok: false,
             message: `商品名: ${productQuantity.name}の商品の在庫が不足しています`,
@@ -77,11 +77,11 @@ export async function POST(req: NextRequest) {
           };
         }
 
-        const newStock = productQuantity.stock - c.quantity;
+        const newStock = productQuantity.stock - cartInfo.quantity;
 
         await prisma.product.update({
           where: {
-            id: c.product_id,
+            id: cartInfo.product_id,
           },
           data: {
             stock: newStock,

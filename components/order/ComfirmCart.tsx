@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/ui/BackButton";
 
 export default function ComfirmCart() {
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ export default function ComfirmCart() {
 
       router.push("/orders/complete");
     } catch (err) {
+      console.error(err);
       setError("情報の登録に失敗しました");
       return;
     }
@@ -120,6 +122,7 @@ export default function ComfirmCart() {
         </div>
         {error && <p>{error}</p>}
       </form>
+      <BackButton href="/cart" label="カートへ戻る" />
     </div>
   );
 }

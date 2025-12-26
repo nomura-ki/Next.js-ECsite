@@ -164,7 +164,7 @@ export async function PUT(
       );
     }
 
-    const dir = "/productImages/other";
+    const dir = "/productImages";
 
     await prisma.productImage.deleteMany({
       where: {

@@ -30,6 +30,7 @@ interface OrderItem {
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { id } = await params;
   let order: Order, orderItem: OrderItem[];
+  let dispPaymentMethod;
 
   try {
     const res = await fetch(`http://localhost:3000/api/orders/${id}`, {
@@ -45,6 +46,19 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
     order = body.data.order;
     orderItem = body.data.orderItem;
+
+    const paymentMethod = order.payment_method;
+
+    switch (paymentMethod) {
+      case "credit_card":
+        dispPaymentMethod = "クレジットカード";
+        break;
+      case "bank_transfer":
+        dispPaymentMethod = "銀行振込";
+        break;
+      default:
+        dispPaymentMethod = "支払方法が設定されていません";
+    }
   } catch (err) {
     console.error(err);
     return <div>エラーが発生しました</div>;
@@ -106,7 +120,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 {order.shipping_address}
               </td>
               <td className="border border-gray text-center align-middle">
-                {order.payment_method}
+                {dispPaymentMethod}
               </td>
             </tr>
           </tbody>

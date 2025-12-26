@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/ui/BackButton";
 
 export default function CreateProducts() {
   type Category = {
@@ -136,25 +137,24 @@ export default function CreateProducts() {
           </label>
         </div>
         <div>
-          <fieldset>
-            <legend>カテゴリー</legend>
+          <label htmlFor="category">カテゴリー</label>
+          <select
+            id="category"
+            onChange={(e) => setcategory_id(e.target.value)}
+          >
+            <option value="">選択してください</option>
             {dispCategory.map((category) => {
               return (
-                <div key={category.id}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="category"
-                      value={category.id}
-                      onChange={(e) => setcategory_id(e.target.value)}
-                      required
-                    />
-                    {category.name}
-                  </label>
-                </div>
+                <option
+                  key={category.id}
+                  value={category.id}
+                  className="text-black"
+                >
+                  {category.name}
+                </option>
               );
             })}
-          </fieldset>
+          </select>
         </div>
         <div>
           <label>
@@ -225,6 +225,7 @@ export default function CreateProducts() {
           >
             商品登録する
           </button>
+          <BackButton href="/products" label="商品一覧へ戻る" />
         </div>
         {error && <p>{error}</p>}
       </form>

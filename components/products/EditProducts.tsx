@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/ui/BackButton";
 
 type Category = {
   id: string;
@@ -25,7 +26,6 @@ export default function EditProducts({ id }: { id: string }) {
   const [folderArr, setFolderArr] = useState<string[]>([]);
   const [imageArr, setImageArr] = useState<string[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
-  const [currentImages, setCurrentImage] = useState<string[]>([]);
   const router = useRouter();
 
   const dir = "/productImages/";
@@ -43,7 +43,7 @@ export default function EditProducts({ id }: { id: string }) {
         const imageurl: string[] = data.data.products.map((image: image) => {
           return image.image_url.replace(dir, "");
         });
-        setCurrentImage(imageurl);
+        setCheckedValues(imageurl);
       });
   }, [id]);
 
@@ -160,26 +160,25 @@ export default function EditProducts({ id }: { id: string }) {
           </label>
         </div>
         <div>
-          <fieldset>
-            <legend>カテゴリー</legend>
+          <label htmlFor="category">カテゴリー</label>
+          <select
+            id="category"
+            value={category_id}
+            onChange={(e) => setCategory_id(e.target.value)}
+          >
+            <option value="">選択してください</option>
             {category.map((category) => {
               return (
-                <div key={category.id}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="category"
-                      value={category.id}
-                      onChange={(e) => setCategory_id(e.target.value)}
-                      checked={category_id === category.id}
-                      required
-                    />
-                    {category.name}
-                  </label>
-                </div>
+                <option
+                  key={category.id}
+                  value={category.id}
+                  className="text-black"
+                >
+                  {category.name}
+                </option>
               );
             })}
-          </fieldset>
+          </select>
         </div>
         <div>
           <label>
@@ -234,18 +233,12 @@ export default function EditProducts({ id }: { id: string }) {
                   </div>
                 );
               })}
-              <div>
-                <p>選択中変更後画像：</p>
-                {checkedValues.map((value, index) => (
-                  <p key={index}>{value}</p>
-                ))}
-              </div>
             </fieldset>
           </div>
         )}
         <div>
-          <p>現在使用中画像：</p>
-          {currentImages.map((value, index) => (
+          <p>選択中画像：</p>
+          {checkedValues.map((value, index) => (
             <p key={index}>{value}</p>
           ))}
         </div>
@@ -256,6 +249,7 @@ export default function EditProducts({ id }: { id: string }) {
           >
             商品更新する
           </button>
+          <BackButton href="/products" label="商品一覧に戻る" />
         </div>
         {error && <p>{error}</p>}
       </form>

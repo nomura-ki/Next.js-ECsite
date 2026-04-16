@@ -32,6 +32,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const order = await prisma.$transaction(async (prisma) => {
       const token = getUserFromReq(req);
 
@@ -191,7 +195,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { success: false, message: "注文処理が失敗しました" },
+      { success: false, message: "システムエラーが発生しました。しばらくしてから再度お試しください。" },
       { status: 500 }
     );
   }

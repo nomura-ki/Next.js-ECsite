@@ -32,14 +32,13 @@ export default async function Page() {
     });
 
     if (!res.ok) {
-      console.error("cart res error");
-      return;
+      return <div>システムエラーが発生しました。しばらくしてから再度お試しください。</div>
     }
 
     data = await res.json();
   } catch (err) {
     console.error(err);
-    return <div>エラーが発生しました</div>;
+    return <div>システムエラーが発生しました。しばらくしてから再度お試しください。</div>;
   }
 
   const pro: CartItemWithProduct[] = data.data.cartItems;

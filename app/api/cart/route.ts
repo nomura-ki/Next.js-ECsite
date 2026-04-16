@@ -6,6 +6,10 @@ import { formatCartItem } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const token = getUserFromReq(req);
 
     if (!token) {
@@ -54,6 +58,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const token = getUserFromReq(req);
 
     if (!token) {
@@ -84,12 +92,16 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error(err);
-    return errorResponse("error");
+    return errorResponse("システムエラーが発生しました。しばらくしてから再度お試しください。");
   }
 }
 
 export async function PUT(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+    
     const token = getUserFromReq(req);
 
     if (!token) {
@@ -109,9 +121,9 @@ export async function PUT(req: NextRequest) {
     });
 
     if (!isExist) {
-      console.error("カートに商品が存在しません");
+      console.error("更新対象の商品が存在しません。");
       return NextResponse.json(
-        { error: "リソースが見つかりません" },
+        { message: "更新対象の商品が存在しません。" },
         { status: 404 }
       );
     }
@@ -130,12 +142,16 @@ export async function PUT(req: NextRequest) {
 
     return successResponse({ message: "個数を更新しました" });
   } catch {
-    return errorResponse("更新に失敗しました");
+    return errorResponse("システムエラーが発生しました。しばらくしてから再度お試しください。");
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const token = getUserFromReq(req);
 
     if (!token) {
@@ -155,9 +171,9 @@ export async function DELETE(req: NextRequest) {
     });
 
     if (!isExist) {
-      console.error("カートに商品が存在しません");
+      console.error("削除対象の商品が存在しません。");
       return NextResponse.json(
-        { error: "リソースが見つかりません" },
+        { message: "削除対象の商品が存在しません。" },
         { status: 404 }
       );
     }
@@ -174,6 +190,6 @@ export async function DELETE(req: NextRequest) {
     return successResponse({ message: "カートから商品を削除しました" });
   } catch (err) {
     console.error(err);
-    return errorResponse("削除に失敗しました！");
+    return errorResponse("システムエラーが発生しました。しばらくしてから再度お試しください。");
   }
 }

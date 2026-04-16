@@ -39,12 +39,15 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     });
 
     if (!res.ok) {
-      throw new Error("エラーが発生しました");
+      return <h1>システムエラーが発生しました。しばらくしてから再度お試しください。</h1>
     }
 
     const body = await res.json();
 
-    order = body.data.order;
+    order = {
+      ...body.data.order,
+      created_at: new Date(body.data.order.created_at).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
+    };
     orderItem = body.data.orderItem;
 
     const paymentMethod = order.payment_method;
@@ -61,7 +64,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     }
   } catch (err) {
     console.error(err);
-    return <div>エラーが発生しました</div>;
+    return <div>システムエラーが発生しました。しばらくしてから再度お試しください。</div>;
   }
 
   return (
@@ -161,8 +164,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
           </tbody>
         </table>
       </div>
-      <DeleteOrder id={id} />
-      <BackButton href="/orders" label="戻る" />
+        <DeleteOrder id={id} />
     </div>
   );
 }

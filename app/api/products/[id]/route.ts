@@ -41,7 +41,7 @@ export async function GET(
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { success: false, message: "サーバーエラー" },
+      { success: false, message: "システムエラーが発生しました。しばらくしてから再度お試しください。" },
       { status: 500 }
     );
   }

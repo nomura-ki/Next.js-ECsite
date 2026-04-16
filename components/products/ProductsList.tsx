@@ -11,26 +11,35 @@ export default function ProductsList({
 }: {
   initialProducts: Product[];
 }) {
+  const [error, setError] = useState("");
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
   const { role } = useAuth();
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (search.length > 100) {
+      setError("検索キーワードは100文字以内で入力してください。")
+      return;
+    }
     const params = new URLSearchParams();
     if (search) params.append("search", search);
     const res = await fetch(`/api/products?${params.toString()}`);
     const data = await res.json();
     if (data.success) setProducts(data.data.products);
+    setError("");
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <form onSubmit={handleSearch} className="mb-4 flex gap-2">
+    <div className="container flex flex-col gap-3 mx-auto p-4">
+      <form onSubmit={handleSearch} className="flex gap-2">
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setError("")
+          }}
           placeholder="商品名で検索"
           className="border px-2 py-1 flex-1"
         />
@@ -41,7 +50,7 @@ export default function ProductsList({
           検索
         </button>
       </form>
-
+      { error && <a className="text-red-500">{error}</a>}
       <ul className="grid grid-cols-3 gap-4">
         {products.map((p) => (
           <li key={p.id} className="border p-2 rounded flex flex-col">

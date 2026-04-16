@@ -21,7 +21,10 @@ export default async function Page() {
     return <div>エラーが発生しました</div>;
   }
 
-  const order: Orders[] = data.data;
+  const order: Orders[] = data.data.map((order: Orders) => {
+    const utcDate = new Date(order.created_at)
+    return {...order, created_at: utcDate.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}
+  })
 
   return (
     <div>
@@ -63,7 +66,9 @@ export default async function Page() {
 
         {order.length === 0 && <h1 className="m-3">注文がありません</h1>}
       </div>
-      <BackButton href="/products" label="商品一覧へ" />
+      <div className="py-5">
+        <BackButton href="/products" label="商品一覧へ" />
+      </div>
     </div>
   );
 }

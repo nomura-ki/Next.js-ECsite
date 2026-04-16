@@ -90,7 +90,18 @@ export async function POST(req: NextRequest) {
     if (!seller) {
       return NextResponse.json(
         { success: false, message: "sellerが存在しません" },
-        { status: 404 }
+        { status: 400 }
+      );
+    }
+
+    const category = await prisma.category.findUnique({
+      where: { id: category_id }
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { success: false, message: "存在しないカテゴリーです"},
+        { status: 400 }
       );
     }
 

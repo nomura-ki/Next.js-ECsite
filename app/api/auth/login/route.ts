@@ -6,13 +6,17 @@ import { errorResponse } from "@/lib/response";
 
 export async function POST(req: NextRequest) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const { email, password } = await req.json();
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return errorResponse("Invalid credentials!", 401);
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return errorResponse("Invalid credentials!", 401);
+      return errorResponse("メールアドレスまたはパスワードが正しくありません。", 401);
     }
 
     const load = {
@@ -41,6 +45,6 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     console.error(error);
-    return errorResponse("Internal server error");
+    return errorResponse("システムエラーが発生しました。しばらくしてから再度お試しください。");
   }
 }

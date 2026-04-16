@@ -13,7 +13,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const dirPath: string = path.join(
+    const folderDirPath: string = path.join(process.cwd(), "public", "productImages");
+
+    const folders = fs
+      .readdirSync(folderDirPath, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
+    
+    const exist = folders.some(f => f === folder)
+
+    if (!exist) {
+      return NextResponse.json(
+        { success: false, message: "指定された画像フォルダが存在しません。" },
+        { status: 400 }
+      );
+    }
+
+    const fileDirPath: string = path.join(
       process.cwd(),
       "public",
       "productImages",
@@ -21,7 +37,7 @@ export async function POST(req: NextRequest) {
     );
 
     const files = fs
-      .readdirSync(dirPath, { withFileTypes: true })
+      .readdirSync(fileDirPath, { withFileTypes: true })
       .filter((dirent) => dirent.isFile())
       .map((file) => file.name)
       .map((file) => `${folder}/${file}`)

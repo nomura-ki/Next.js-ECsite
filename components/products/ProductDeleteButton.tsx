@@ -39,7 +39,7 @@ export default function ProductDeleteButton({ id }: { id: string }) {
       type="button"
       onClick={handleDelete}
       disabled={loading}
-      className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
     >
       {loading ? "削除中..." : "削除する"}
     </button>

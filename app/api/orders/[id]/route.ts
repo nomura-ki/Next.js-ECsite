@@ -10,6 +10,7 @@ export async function GET(
   { params }: { params: Promise<Params> }
 ) {
   try {
+
     const { id } = await params;
 
     const orderItem = await prisma.orderItem.findMany({
@@ -48,7 +49,7 @@ export async function GET(
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { success: false, message: "internal error" },
+      { success: false, message: "システムエラーが発生しました。しばらくしてから再度お試しください。" },
       { status: 500 }
     );
   }
@@ -59,6 +60,10 @@ export async function DELETE(
   { params }: { params: Promise<Params> }
 ) {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const { id } = await params;
 
     const orderIsExist = await prisma.order.findUnique({
@@ -104,7 +109,7 @@ export async function DELETE(
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { success: false, message: "internal error" },
+      { success: false, message: "システムエラーが発生しました。しばらくしてから再度お試しください。" },
       { status: 500 }
     );
   }

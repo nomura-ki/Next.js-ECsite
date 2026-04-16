@@ -80,17 +80,23 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   }
 
   return (
-    <div>
+    <>
       <ProductImages imageUrls={images} />
-      <div>{productInfo.product.name}</div>
-      <div>￥{productInfo.product.price}</div>
-      <div>商品説明：{productInfo.product.description}</div>
-      <AddToCartButton
-        productId={productInfo.product_id}
-        stock={productInfo.product.stock}
-        cartQuantity={cartQuantity}
-      />
-      <BackButton href="/products" label="戻る" />
-    </div>
+      <div className="pt-3 grid grid-cols-[100px_1fr] gap-y-2 gap-x-2 items-center">
+        <div>商品名</div>
+        <div>{productInfo.product.name}</div>
+        <div>価格</div>
+        <div>￥{productInfo.product.price}</div>
+        <div>商品説明</div>
+        <div>{productInfo.product.description}</div>
+        <div className="col-span-2 justify-self-start">
+          <AddToCartButton
+            productId={productInfo.product_id}
+            stock={productInfo.product.stock}
+            cartQuantity={cartQuantity}
+          />
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,6 +1,25 @@
 import { cookies } from "next/headers";
 import CheckCart from "@/components/order/CheckCart";
-import { CartItemWithProduct } from "@/lib/utils";
+
+type CartItem = {
+  quantity: number;
+  id: string;
+  user_id: string;
+  product_id: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+interface CartItemWithProduct extends CartItem {
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    stock: number;
+    imageUrl: string;
+  };
+  subtotal: number;
+}
 
 export default async function Page() {
   let data;
@@ -13,14 +32,13 @@ export default async function Page() {
     });
 
     if (!res.ok) {
-      console.error("cart res error");
-      return;
+      return <div>システムエラーが発生しました。しばらくしてから再度お試しください。</div>
     }
 
     data = await res.json();
   } catch (err) {
     console.error(err);
-    return <div>エラーが発生しました</div>;
+    return <div>システムエラーが発生しました。しばらくしてから再度お試しください。</div>;
   }
 
   const pro: CartItemWithProduct[] = data.data.cartItems;

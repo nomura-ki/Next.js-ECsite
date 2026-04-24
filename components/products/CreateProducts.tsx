@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/ui/BackButton";
 import { useForm } from "react-hook-form";
+import { fetchWithAuth } from "../../lib/fetchWithAuth";
 
 type Category = {
   id: string;
@@ -48,55 +49,65 @@ export default function CreateProducts() {
     setError("");
 
     try {
-      const res = await fetch("/api/products", {
+      if (checkedValues.length === 0) {
+        setError("商品画像を選択してください。")
+        return;
+      }
+
+      await fetchWithAuth("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "情報の登録に失敗しました");
-        return;
-      }
-
       router.push("/products");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("商品情報の登録に失敗しました");
+      setError(err.message || "商品情報の登録に失敗しました");
       return;
     }
   };
 
   useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        setDispCategory(data.data);
-      });
+    const fetchData = async () => {
+      try {
+        const catData = await fetchWithAuth("/api/categories")
+        const folderData = await fetchWithAuth("/api/products/folders")
 
-    fetch("/api/products/folders")
-      .then((res) => res.json())
-      .then((data) => {
-        setFolderArr(data.data);
-      });
+        setDispCategory(catData.data);
+        setFolderArr(folderData.data);
+
+      } catch (e: any) {
+        console.error(e);
+        setError(e.message);
+      }
+    };
+
+    fetchData();
   }, []);
-
 
   useEffect(() => {
     if (!folder) return;
 
-    fetch("/api/products/images", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ folder }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchData = async () => {
+      setError("");
+
+      try {
+        const data = await fetchWithAuth("/api/products/images", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ folder })
+        });
+
         setImageArr(data.data ?? []);
-      })
-      
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message);
+      }
+    };
+
+    fetchData();
+    
   }, [folder]);
 
   return (
@@ -114,7 +125,9 @@ export default function CreateProducts() {
             maxLength: {
               value: 255,
               message: "商品数は255文字以内で入力してください。"
-            }
+            },
+            validate: (value) => 
+              value.trim().length > 0 || "スペースのみは入力できません"
           })}
           type="text"
           className="border-1 rounded pl-2 w-[250px]"
@@ -146,9 +159,11 @@ export default function CreateProducts() {
         <input
           {...register("description", {
             maxLength: {
-              value: 1000,
+              value: 2000,
               message: "商品説明は2000文字以内で入力してください。"
-            }
+            },
+            validate: (value) =>
+              value === "" || value.trim().length > 0 || "スペースのみは入力できません。"
           })}
           type="text"
           className="border-1 rounded pl-2 w-[250px]"
@@ -210,7 +225,9 @@ export default function CreateProducts() {
                       type="radio"
                       value={folder}
                       {...register("folder", {
-                        required: "フォルダを選択してください"
+                        required: "フォルダを選択してください",
+                        validate: (value) => 
+                          (folderArr.some(f => f === value)) || "指定された画像フォルダが存在しません。"
                       })}
                     />
                     {folder}
@@ -238,8 +255,20 @@ export default function CreateProducts() {
                       type="checkbox"
                       value={image}
                       {...register("checkedValues", {
-                        validate: (value) =>
-                          value && value.length > 0 || "商品画像を選択してください。"
+                        required: "商品画像を選択してください。",
+                        validate: (values) => {
+                          if (!values || values.length === 0) return "指定されたフォルダに画像が存在しません。";
+
+                          if (!values.every(v => imageArr.includes(v))) {
+                            return "指定された画像ファイルが存在しません。";
+                          }
+
+                          if (!values.every(v => /\.(jpg|jpeg|png|webp)$/i.test(v))) {
+                            return "画像ファイル形式が不正です。"
+                          }
+
+                          return true;
+                        }
                       })}
                       className="shrink-0"
                     />
@@ -269,7 +298,7 @@ export default function CreateProducts() {
           </button>
           <BackButton href="/products" label="商品一覧へ戻る" />
         </div>
-        {error && <p className="col-span-3">{error}</p>}
+        {error && <p className="col-span-3 text-red-500">{error}</p>}
       </form>
     </div>
   );

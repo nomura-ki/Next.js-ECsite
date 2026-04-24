@@ -9,7 +9,6 @@ async function main() {
   //    外部キーの関係で子 → 親の順に消す
   // =====================================
   await prisma.$transaction([
-    // model 名はプロジェクトに合わせて直してね
     prisma.cartItem.deleteMany(),
     prisma.productImage.deleteMany(), // ProductImage モデルがある前提
     prisma.product.deleteMany(),

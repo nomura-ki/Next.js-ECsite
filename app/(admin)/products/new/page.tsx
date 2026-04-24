@@ -1,10 +1,12 @@
 import CreateProducts from "@/components/products/CreateProducts";
+import { redirect } from "next/navigation";
+import { getUser } from "@/lib/auth"
 
 export default async function Page() {
-  try {
-  } catch (err) {
-    console.error(err);
-    <h1>エラーが発生しました</h1>;
+  const user = await getUser();
+
+  if (!user || user.role !== "seller") {
+    redirect("/products")
   }
 
   return (

@@ -1,7 +1,7 @@
 import ProductImages from "@/components/products/ProductImages";
 import AddToCartButton from "@/components/cart/AddToCartButton";
-import BackButton from "@/components/ui/BackButton";
 import { cookies } from "next/headers";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 interface Params {
   id: string;
@@ -28,11 +28,13 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const images: string[] = [];
 
   try {
+    const cookieStore = await cookies();
+
     const productsRes = await fetch(
       `http://localhost:3000/api/products/${id}`,
       {
         method: "GET",
-
+        headers: { cookie: cookieStore.toString() },
         cache: "no-cache",
       }
     );
@@ -50,13 +52,14 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       images.push(productsBody.data.products[i].image_url);
     }
 
-    const cookieStore = await cookies();
-
-    const cartRes = await fetch("http://localhost:3000/api/cart", {
-      method: "GET",
-      headers: { cookie: cookieStore.toString() },
-      cache: "no-cache",
-    });
+    const cartRes = await fetchWithAuth(
+      "http://localhost:3000/api/cart", 
+      {
+        method: "GET",
+        headers: { cookie: cookieStore.toString() },
+        cache: "no-cache",
+      }
+    );
 
     if (!cartRes.ok) {
       console.error("internal error (cartRes)");
@@ -74,8 +77,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     } else {
       cartQuantity = 0;
     }
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error("products error: ", err);
     return <div>エラーが発生しました</div>;
   }
 

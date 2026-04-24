@@ -1,5 +1,7 @@
 import { Product } from "@/types/product";
 import ProductsList from "@/components/products/ProductsList";
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function Products() {
   let data;
@@ -22,9 +24,19 @@ export default async function Products() {
 
   const pro: Product[] = data.data.products;
 
+
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <div>
-      <ProductsList initialProducts={pro} />
+      <ProductsList 
+        initialProducts={pro}
+        role={user?.role}
+      />
     </div>
   );
 }

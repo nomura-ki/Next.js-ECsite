@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
-  password  String
-  role      String
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  cartItems CartItem[]
-  orders    Order[]
-  Seller    Seller[]
-  sessions  Session[]
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  role          String
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  cartItems     CartItem[]
+  orders        Order[]
+  Seller        Seller[]
+  sessions      Session[]
+  RefreshToken  RefreshToken[]
 
   @@map("users")
 }
@@ -31,6 +32,21 @@ model Session {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("sessions")
+}
+
+model RefreshToken {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  revokedAt  DateTime?
+  replacedBy String?
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refreshToken")
 }
 
 model Product {

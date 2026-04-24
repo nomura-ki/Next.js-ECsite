@@ -68,8 +68,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  try {
+  try { 
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const token = getUserFromReq(req);
+
+    if (token?.role !== "seller") {
+      return NextResponse.json({ message: "権限がありません"}, { status: 403 });
+    }
 
     if (!token) {
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
@@ -124,11 +132,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
     return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
+      { success: false, message: err.message ||"システムエラーが発生しました。しばらくしてから再度お試しください。" },
+      { status: err.status || 500 }
     );
   }
 }

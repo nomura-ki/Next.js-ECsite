@@ -3,18 +3,21 @@
 import { useState } from "react";
 import { Product } from "@/types/product";
 import Link from "next/link";
-import { useAuth } from "@/app/context/AuthContext";
 import Image from "next/image";
 
 export default function ProductsList({
   initialProducts,
+  role
 }: {
-  initialProducts: Product[];
+  initialProducts: Product[],
+  role: "buyer" | "seller"
 }) {
   const [error, setError] = useState("");
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
-  const { role } = useAuth();
+
+  console.log("role", role)
+
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

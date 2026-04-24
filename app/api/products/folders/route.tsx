@@ -4,6 +4,10 @@ import path from "path";
 
 export async function GET() {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const dirPath: string = path.join(process.cwd(), "public", "productImages");
 
     const folders = fs

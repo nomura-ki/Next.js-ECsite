@@ -4,7 +4,7 @@ import { errorResponse, successResponse } from "@/lib/response";
 
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get("token")?.value;
+    const token = req.cookies.get("accessToken")?.value;
 
     await prisma.session.deleteMany({
       where: {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     const res = successResponse("logout success");
 
-    res.cookies.delete("token");
+    res.cookies.delete("accessToken");
     return res;
   } catch (error) {
     console.error(error);

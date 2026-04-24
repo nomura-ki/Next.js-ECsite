@@ -5,6 +5,10 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
+    if (process.env.MOCK_DB_ERROR === "true") {
+      throw new Error("Mock DB Error");
+    }
+
     const category = await prisma.category.findMany({
       orderBy: {
         id: "desc",

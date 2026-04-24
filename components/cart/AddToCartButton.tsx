@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../app/context/AuthContext";
+import { useState } from "react";
 import BackButton from "../ui/BackButton";
 
 type Props = {
@@ -36,7 +34,6 @@ export default function AddToCartButton({
 
   const [quantity, setQuantity] = useState<number>(cartQuantity);
   const [message, setMessage] = useState<{message: string, danger: boolean}>(initMessage);
-  const { role } = useAuth();
 
   const validate = (value: number) => {
     if (value <= 0) {
@@ -98,7 +95,6 @@ export default function AddToCartButton({
     }
   };
 
-  const disabled: boolean = ( role === "seller") 
 
   return (
     <div>
@@ -106,7 +102,6 @@ export default function AddToCartButton({
         <label>数量</label>
         <div className="flex gap-3 items-center">
           <input
-            disabled={disabled}
             type="number"
             min={0}
             max={stock}
@@ -124,7 +119,6 @@ export default function AddToCartButton({
         </div>
         <div className="col-start-2 flex items-center gap-5">
           <button
-            disabled={disabled}
             type="button"
             onClick={handleAddToCart}
             className="h-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-blue-300 disabled:hover:bg-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserFromReq } from "@/lib/auth";
 
@@ -97,13 +97,13 @@ export async function DELETE(
 }
 
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<Params> }
 ) {
   try {
     const { id } = await params;
 
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (!token) {
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });

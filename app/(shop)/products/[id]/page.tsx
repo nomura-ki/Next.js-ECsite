@@ -1,7 +1,9 @@
 import ProductImages from "@/components/products/ProductImages";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import { cookies } from "next/headers";
-import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { serverFetchWithAuth } from "@/lib/auth/serverFetchWithAuth";
+import { getCurrentUser } from "@/lib/auth";
+import BackButton from "@/components/ui/BackButton";
 
 interface Params {
   id: string;
@@ -25,12 +27,15 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   let productInfo;
   let cartInfo;
   let cartQuantity;
+  let user;
   const images: string[] = [];
 
   try {
+    user = await getCurrentUser();
+
     const cookieStore = await cookies();
 
-    const productsRes = await fetch(
+    const productsRes = await serverFetchWithAuth(
       `http://localhost:3000/api/products/${id}`,
       {
         method: "GET",
@@ -52,7 +57,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       images.push(productsBody.data.products[i].image_url);
     }
 
-    const cartRes = await fetchWithAuth(
+    const cartRes = await serverFetchWithAuth(
       "http://localhost:3000/api/cart", 
       {
         method: "GET",
@@ -92,13 +97,19 @@ export default async function Page({ params }: { params: Promise<Params> }) {
         <div>￥{productInfo.product.price}</div>
         <div>商品説明</div>
         <div>{productInfo.product.description}</div>
-        <div className="col-span-2 justify-self-start">
-          <AddToCartButton
-            productId={productInfo.product_id}
-            stock={productInfo.product.stock}
-            cartQuantity={cartQuantity}
-          />
-        </div>
+        {(user.role === "buyer") ? (
+          <div className="col-span-2 justify-self-start">
+            <AddToCartButton
+              productId={productInfo.product_id}
+              stock={productInfo.product.stock}
+              cartQuantity={cartQuantity}
+            />
+          </div>
+        ) : (
+          <div className="pt-3 col-start-2">
+            <BackButton href="/products" label="商品一覧へ戻る" />
+          </div>
+        )}
       </div>
     </>
   );

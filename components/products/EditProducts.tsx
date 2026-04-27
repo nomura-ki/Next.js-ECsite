@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import BackButton from "@/components/ui/BackButton";
 import ProductDeleteButton from "./ProductDeleteButton";
+import { clientFetchWithAuth } from "../../lib/auth/clientFetchWithAuth";
 
 type Category = {
   id: string;
@@ -48,7 +49,7 @@ export default function EditProducts({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchData = async () =>{
-      const res = await fetch(`/api/products/${id}`);
+      const res = await clientFetchWithAuth(`/api/products/${id}`);
       const data = await res.json();
 
       const product = data.data.products[0].product;
@@ -70,13 +71,13 @@ export default function EditProducts({ id }: { id: string }) {
   }, [id, reset]);
 
   useEffect(() => {
-    fetch(`/api/categories`)
+    clientFetchWithAuth(`/api/categories`)
       .then((res) => res.json())
       .then((data) => {
         setCategory(data.data);
       });
 
-    fetch(`/api/products/folders`)
+    clientFetchWithAuth(`/api/products/folders`)
       .then((res) => res.json())
       .then((data) => {
         setFolderArr(data.data);
@@ -86,7 +87,7 @@ export default function EditProducts({ id }: { id: string }) {
   useEffect(() => {
     if (!folder) return;
 
-    fetch("/api/products/images", {
+    clientFetchWithAuth("/api/products/images", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ folder }),
@@ -107,7 +108,7 @@ export default function EditProducts({ id }: { id: string }) {
         return;
       }
 
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await clientFetchWithAuth(`/api/products/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

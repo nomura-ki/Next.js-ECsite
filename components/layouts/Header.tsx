@@ -5,7 +5,9 @@ import { useAuth } from "@/app/context/AuthContext";
 
 export default function Header() {
   const router = useRouter();
-  const { role } = useAuth();
+  const user = useAuth()
+
+    console.log("headerrole", user)
 
   const handleLogout = async () => {
     try {
@@ -32,7 +34,7 @@ export default function Header() {
       </h1>
 
       <div className="flex items-center gap-3">
-        {role === "seller" && (
+        {user && user.role === "seller" && (
           <>
             <button
               type="button"
@@ -51,7 +53,7 @@ export default function Header() {
           </>
         )}
 
-        {role === "buyer" && (
+        {user && user.role === "buyer" && (
           <button
             type="button"
             onClick={() => router.push("/cart")}

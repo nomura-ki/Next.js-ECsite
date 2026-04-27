@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BackButton from "../ui/BackButton";
+import { clientFetchWithAuth } from "@/lib/auth/clientFetchWithAuth";
 
 type Props = {
   productId: string;
@@ -61,7 +62,7 @@ export default function AddToCartButton({
         return;
       }
 
-      const res = await fetch("/api/cart", {
+      const res = await clientFetchWithAuth("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, quantity }),

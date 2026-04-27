@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/ui/BackButton";
 import { useForm } from "react-hook-form";
+import { clientFetchWithAuth } from "@/lib/auth/clientFetchWithAuth";
 
 type FormValue = {
   name: string,
@@ -29,7 +30,7 @@ export default function ComfirmCart() {
     console.log(1)
 
     try {
-      const res = await fetch("/api/orders", {
+      const res = await clientFetchWithAuth("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),

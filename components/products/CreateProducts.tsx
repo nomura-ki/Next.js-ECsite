@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/ui/BackButton";
 import { useForm } from "react-hook-form";
-import { fetchWithAuth } from "../../lib/fetchWithAuth";
+import { clientFetchWithAuth } from "@/lib/auth/clientFetchWithAuth";
+import { NextResponse } from "next/server";
 
 type Category = {
   id: string;
@@ -54,7 +55,7 @@ export default function CreateProducts() {
         return;
       }
 
-      await fetchWithAuth("/api/products", {
+      await clientFetchWithAuth("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -71,10 +72,15 @@ export default function CreateProducts() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const catData = await fetchWithAuth("/api/categories")
-        const folderData = await fetchWithAuth("/api/products/folders")
+        const categoryRes = await clientFetchWithAuth("/api/categories")
+        const folderRes = await clientFetchWithAuth("/api/products/folders")
 
-        setDispCategory(catData.data);
+        const categoryData = await categoryRes.json();
+        const folderData = await folderRes.json();
+
+        console.log("cate", categoryData, "folder", folderData);
+
+        setDispCategory(categoryData.data);
         setFolderArr(folderData.data);
 
       } catch (e: any) {
@@ -93,11 +99,17 @@ export default function CreateProducts() {
       setError("");
 
       try {
-        const data = await fetchWithAuth("/api/products/images", {
+        const res = await clientFetchWithAuth("/api/products/images", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ folder })
         });
+
+        if (!res.ok) {
+          return NextResponse.json({message: "img err"})
+        }
+
+        const data = await res.json();
 
         setImageArr(data.data ?? []);
       } catch (err: any) {

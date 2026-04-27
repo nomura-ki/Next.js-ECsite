@@ -1,5 +1,5 @@
-import BackButton from "@/components/ui/BackButton";
 import DeleteOrder from "@/components/order/DeleteOrder";
+import { serverFetchWithAuth } from "@/lib/auth/serverFetchWithAuth";
 
 interface Params {
   id: string;
@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   let dispPaymentMethod;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/${id}`, {
+    const res = await serverFetchWithAuth(`http://localhost:3000/api/orders/${id}`, {
       method: "GET",
       cache: "no-cache",
     });

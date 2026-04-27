@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       throw new Error("Mock DB Error");
     }
 
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (!token) {
       console.error("認証失敗");
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       throw new Error("Mock DB Error");
     }
 
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (!token) {
       return NextResponse.json({ error: "認証失敗" }, { status: 401 });
@@ -102,7 +102,7 @@ export async function PUT(req: NextRequest) {
       throw new Error("Mock DB Error");
     }
     
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (!token) {
       console.error("認証失敗");
@@ -152,7 +152,7 @@ export async function DELETE(req: NextRequest) {
       throw new Error("Mock DB Error");
     }
 
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (!token) {
       console.error("認証失敗");

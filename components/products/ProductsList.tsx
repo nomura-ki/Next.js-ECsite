@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Product } from "@/types/product";
 import Link from "next/link";
 import Image from "next/image";
+import { clientFetchWithAuth } from "../../lib/auth/clientFetchWithAuth";
 
 export default function ProductsList({
   initialProducts,
@@ -27,7 +28,7 @@ export default function ProductsList({
     }
     const params = new URLSearchParams();
     if (search) params.append("search", search);
-    const res = await fetch(`/api/products?${params.toString()}`);
+    const res = await clientFetchWithAuth(`/api/products?${params.toString()}`);
     const data = await res.json();
     if (data.success) setProducts(data.data.products);
     setError("");

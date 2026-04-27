@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import BackButton from "../ui/BackButton";
+import BackButton from "@/components/ui/BackButton";
+import { clientFetchWithAuth } from "@/lib/auth/clientFetchWithAuth";
 
 export default function DeleteOrder({ id }: { id: string }) {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function DeleteOrder({ id }: { id: string }) {
   const handleDelete = async () => {
     try {
 
-      const res = await fetch(`/api/orders/${id}`, {
+      const res = await clientFetchWithAuth(`/api/orders/${id}`, {
         method: "DELETE",
         cache: "no-cache",
       });
@@ -38,7 +39,7 @@ export default function DeleteOrder({ id }: { id: string }) {
         </button>
         <BackButton href="/orders" label="戻る" />
         </div>
-      <div className="text-red-500">システムエラーが発生しました。しばらくしてから再度お試しください。</div>
+      <div className="text-red-500">{error}</div>
     </div>
   );
 }

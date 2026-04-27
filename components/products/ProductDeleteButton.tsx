@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { clientFetchWithAuth } from "../../lib/auth/clientFetchWithAuth";
 
 export default function ProductDeleteButton({ id }: { id: string }) {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function ProductDeleteButton({ id }: { id: string }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await clientFetchWithAuth(`/api/products/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });

@@ -1,17 +1,20 @@
-"use client";
-
-import Header from "@/components/layouts/Header";
+import { getCurrentUser } from "@/lib/auth";
 import { AuthProvider } from "@/app/context/AuthContext";
+import Header from "@/components/layouts/Header";
 
-export default function AdminLayout({
+export default async function ShopLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+
+  console.log("layout user", user)
+
   return (
-    <AuthProvider>
+    <AuthProvider user={user}>
       <Header />
-      <div className="p-4">{children}</div>
+      <main className="p-4">{children}</main>
     </AuthProvider>
   );
 }

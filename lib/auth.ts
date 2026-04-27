@@ -68,10 +68,31 @@ export async function getUserFromReq(req: NextRequest) {
   }
 }
 
-export async function getCurrentUser() {
+// export async function getCurrentUser() {
+//   const cookieStore = await cookies();
+//   const token = cookieStore.get("accessToken")?.value;
+//   if (!token) return null;
+
+//   return verifyAccessToken(token);
+// }
+
+
+export async function getCurrentUser(): Promise<AccessPayload> {
   const cookieStore = await cookies();
   const token = cookieStore.get("accessToken")?.value;
-  if (!token) return null;
 
-  return verifyAccessToken(token);
+  if (!token) throw new Error("error token");
+
+  try {
+    const payload = verifyAccessToken(token);
+
+    if (!payload) throw new Error("error verify accessToken");
+
+    return {
+      userId: payload.userId,
+      role: payload.role,
+    };
+  } catch {
+    throw new Error("error get current user");
+  }
 }

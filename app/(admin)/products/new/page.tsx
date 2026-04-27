@@ -1,9 +1,9 @@
 import CreateProducts from "@/components/products/CreateProducts";
 import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth";
 
 export default async function Page() {
-  const user = await getUser();
+  const user = await getCurrentUser();
 
   if (!user || user.role !== "seller") {
     redirect("/products")

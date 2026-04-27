@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const order = await prisma.$transaction(async (prisma) => {
-      const token = getUserFromReq(req);
+      const token = await getUserFromReq(req);
 
       if (!token) {
         return { ok: false, message: "認証失敗", status: 401 };

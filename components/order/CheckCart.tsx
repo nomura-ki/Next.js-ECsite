@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/ui/BackButton";
 import Image from "next/image";
+import { clientFetchWithAuth } from "../../lib/auth/clientFetchWithAuth";
 
 type CartItem = {
   quantity: number;
@@ -78,7 +79,7 @@ export default function CheckCart({
   const handleDeleteItem = async (productId: string) => {
     setMessage(initMessage);
     try {
-      const DelRes = await fetch("/api/cart", {
+      const DelRes = await clientFetchWithAuth("/api/cart", {
         method: "DELETE",
         body: JSON.stringify({ productId }),
       });
@@ -89,7 +90,7 @@ export default function CheckCart({
       }
       const DelData = await DelRes.json();
 
-      const GetRes = await fetch("/api/cart", {
+      const GetRes = await clientFetchWithAuth("/api/cart", {
         method: "GET",
         headers: { cookie: cookieStore.toString() },
       });
@@ -129,7 +130,7 @@ export default function CheckCart({
         [productId]: err,
       }))
 
-      const UpdateRes = await fetch("/api/cart", {
+      const UpdateRes = await clientFetchWithAuth("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, quantity }),
@@ -141,7 +142,7 @@ export default function CheckCart({
       }
       const UpdateData = await UpdateRes.json();
 
-      const GetRes = await fetch("/api/cart", {
+      const GetRes = await clientFetchWithAuth("/api/cart", {
         method: "GET",
         headers: { cookie: cookieStore.toString() },
       });

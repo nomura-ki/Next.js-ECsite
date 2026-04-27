@@ -1,12 +1,13 @@
 import BackButton from "@/components/ui/BackButton";
 import { Orders } from "@/lib/utils";
 import Link from "next/link";
+import { serverFetchWithAuth } from "@/lib/auth/serverFetchWithAuth";
 
 export default async function Page() {
   let data;
 
   try {
-    const res = await fetch("http://localhost:3000/api/orders", {
+    const res = await serverFetchWithAuth("http://localhost:3000/api/orders", {
       method: "GET",
       cache: "no-cache",
     });

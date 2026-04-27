@@ -44,16 +44,18 @@ export async function POST(req: NextRequest) {
 
     res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      maxAge: 60 * 15,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30,
       sameSite: "lax",
+      path: "/",
     });
 
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7,
       sameSite: "lax",
+      path: "/",
     });
 
     return res;

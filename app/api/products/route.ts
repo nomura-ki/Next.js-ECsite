@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       throw new Error("Mock DB Error");
     }
 
-    const token = getUserFromReq(req);
+    const token = await getUserFromReq(req);
 
     if (token?.role !== "seller") {
       return NextResponse.json({ message: "権限がありません"}, { status: 403 });

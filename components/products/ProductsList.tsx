@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Product } from "@/types/product";
 import Link from "next/link";
 import Image from "next/image";
-import { clientFetchWithAuth } from "../../lib/auth/clientFetchWithAuth";
+import { clientFetchWithAuth } from "@/lib/auth/clientFetchWithAuth";
 
 export default function ProductsList({
   initialProducts,

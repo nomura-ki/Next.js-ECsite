@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { includes } from "zod";
+import { serverFetchWithAuth } from "./auth/serverFetchWithAuth";
 
 const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || "acess-secret";
@@ -17,7 +19,7 @@ type RefreshPayload = {
 }
 
 export const generateAccessToken = (payload: AccessPayload): string => {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "30s" });
 };
 
 export const generateRefreshToken = (payload: RefreshPayload): string => {
@@ -76,23 +78,17 @@ export async function getUserFromReq(req: NextRequest) {
 //   return verifyAccessToken(token);
 // }
 
+export async function getCurrentUser() {
+  const cookieHeader = (await cookies()).toString();
 
-export async function getCurrentUser(): Promise<AccessPayload> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("accessToken")?.value;
+  const res = await fetch("http://localhost:3000/api/auth/user", {
+    headers: {
+      cookie: cookieHeader,
+    },
+    cache: "no-store"
+  })
 
-  if (!token) throw new Error("error token");
+  if (!res.ok) return null;
 
-  try {
-    const payload = verifyAccessToken(token);
-
-    if (!payload) throw new Error("error verify accessToken");
-
-    return {
-      userId: payload.userId,
-      role: payload.role,
-    };
-  } catch {
-    throw new Error("error get current user");
-  }
+  return res.json();
 }

@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (!token || isExpired(token)) {
+  if (!token) {
     return NextResponse.redirect(new URL("/login", req.url))
   }
 

@@ -9,17 +9,22 @@ export const serverFetchWithAuth = async (input: RequestInfo, init?: RequestInit
     }
   });
 
+  const cookieHeader = (await headers()).get("cookie") || "";
+
   if (res.status === 401) {
     await fetch("http://localhost:3000/api/auth/refresh", {
       method: "POST",
       headers: {
-        
+        cookie: cookieHeader,
       }
     });
 
     res = await fetch(input, {
       ...init,
-      credentials: "include"
+      headers: {
+        ...init?.headers,
+        cookie: (await headers()).get("cookie") ?? "",
+      }
     });
   }
   

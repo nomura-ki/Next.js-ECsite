@@ -9,8 +9,6 @@ export default async function ShopLayout({
 }) {
   const user = await getCurrentUser();
 
-  console.log("layout user", user)
-
   return (
     <AuthProvider user={user}>
       <Header />

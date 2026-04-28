@@ -26,7 +26,7 @@ export default async function Page() {
   let data;
   try {
     const cookieStore = await cookies();
-    const res = await serverFetchWithAuth("http://localhost:3000/api/cart", {
+    const res = await fetch("http://localhost:3000/api/cart", {
       method: "GET",
       headers: { cookie: cookieStore.toString() },
       cache: "no-cache",

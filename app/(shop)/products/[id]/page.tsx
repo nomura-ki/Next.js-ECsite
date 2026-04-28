@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { serverFetchWithAuth } from "@/lib/auth/serverFetchWithAuth";
 import { getCurrentUser } from "@/lib/auth";
 import BackButton from "@/components/ui/BackButton";
+import { redirect } from "next/navigation";
 
 interface Params {
   id: string;
@@ -32,6 +33,8 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   try {
     user = await getCurrentUser();
+
+    if (!user) redirect("/login")
 
     const cookieStore = await cookies();
 

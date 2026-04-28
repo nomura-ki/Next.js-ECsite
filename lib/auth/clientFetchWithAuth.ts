@@ -5,10 +5,14 @@ export const clientFetchWithAuth = async (input: RequestInfo, init?: RequestInit
   });
 
   if (res.status === 401) {
-    await fetch("/api/auth/refresh", {
+    const refreshRes = await fetch("/api/auth/refresh", {
       method: "POST",
       credentials: "include",
     });
+
+    if (!refreshRes) {
+      return res;
+    }
 
     res = await fetch(input, {
       ...init,

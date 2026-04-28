@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { AuthProvider } from "@/app/context/AuthContext";
 import Header from "@/components/layouts/Header";
+import { redirect } from "next/navigation"
 
 export default async function ShopLayout({
   children,
@@ -8,6 +9,10 @@ export default async function ShopLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login")
+  }
 
   console.log("layout user", user)
 

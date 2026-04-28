@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { refreshForServer } from "./refreshForServer";
+import { cache } from "react";
 
 const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || "acess-secret";
@@ -17,7 +20,7 @@ type RefreshPayload = {
 }
 
 export const generateAccessToken = (payload: AccessPayload): string => {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+  return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: "15s" });
 };
 
 export const generateRefreshToken = (payload: RefreshPayload): string => {
@@ -68,31 +71,26 @@ export async function getUserFromReq(req: NextRequest) {
   }
 }
 
-// export async function getCurrentUser() {
-//   const cookieStore = await cookies();
-//   const token = cookieStore.get("accessToken")?.value;
-//   if (!token) return null;
-
-//   return verifyAccessToken(token);
-// }
-
-
-export async function getCurrentUser(): Promise<AccessPayload> {
+export const getCurrentUser = cache(async (): Promise<AccessPayload | null> => {
   const cookieStore = await cookies();
-  const token = cookieStore.get("accessToken")?.value;
 
-  if (!token) throw new Error("error token");
+  const accessToken = cookieStore.get("accessToken")?.value;
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
-  try {
-    const payload = verifyAccessToken(token);
+  let payload = accessToken ? verifyAccessToken(accessToken) : null;
 
-    if (!payload) throw new Error("error verify accessToken");
+  if (!payload && refreshToken) {
+    const newAccessToken = await refreshForServer();
 
-    return {
-      userId: payload.userId,
-      role: payload.role,
-    };
-  } catch {
-    throw new Error("error get current user");
+    if (!newAccessToken) return null;
+
+    payload = verifyAccessToken(newAccessToken);
   }
-}
+
+  if (!payload) return null;
+
+  return {
+    userId: payload.userId,
+    role: payload.role,
+  };
+});

@@ -1,13 +1,11 @@
 import { cookies } from "next/headers";
-import { refreshCore } from "@/lib/refreshCore";
+import { refreshCore } from "./refreshCore";
 
-export async function POST() {
+export async function refreshForServer() {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refreshToken")?.value;
 
-  if (!refreshToken) {
-    return Response.json({ error: "no token" }, { status: 401 });
-  }
+  if (!refreshToken) return null;
 
   try {
     const tokens = await refreshCore(refreshToken);
@@ -20,8 +18,8 @@ export async function POST() {
       httpOnly: true,
     });
 
-    return Response.json({ accessToken: tokens.accessToken });
+    return tokens.accessToken;
   } catch {
-    return Response.json({ error: "invalid" }, { status: 401 });
+    return null;
   }
 }
